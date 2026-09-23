@@ -22,21 +22,6 @@
 
 ### 1. Sơ đồ kiến trúc tổng quan
 
-```text
-┌─────────────────┐      HTTPS       ┌──────────────────┐
-│  Vercel         │ ───────────────▶│  FastAPI Backend │
-│  (Frontend)     │   VITE_API_      │  (Docker/VPS)    │
-│  React + Vite   │   BASE_URL       │  /api/v1/...     │
-└─────────────────┘                  └────────┬─────────┘
-                                              │
-                                              │ DATABASE_URL
-                                              ▼
-                                       ┌──────────────────┐
-                                       │  PostgreSQL      │
-                                       │  (Neon/Supabase) │
-                                       └──────────────────┘
-```
-
 (Chi tiết mô hình triển khai Production xem tại `PRODUCTION-DEPLOYMENT.md`).
 
 ### 2. Công nghệ sử dụng
@@ -203,7 +188,7 @@ Sau khi nạp dữ liệu mẫu bằng câu lệnh `python -m app.seed` (hoặc 
 
 * **Mật khẩu chung cho tất cả tài khoản**: `Demo@123`
 
-| Vai trò (Role) | Email Đăng Nhập | Nhiệm vụ chính |
+| Vai trò (Role) | Email Đăng Nhập | Chức năng chính |
 | --- | --- | --- |
 | **Quản trị viên (Admin)** | `admin@nhakhoa.vn`<br> | Quản lý tài khoản, cấu hình hệ thống, xem Audit Logs|
 | **Lễ tân (Receptionist)** | `letan@nhakhoa.vn`<br> | Tiếp đón, xếp lịch hẹn, quản lý ghế khám, lập hóa đơn|
