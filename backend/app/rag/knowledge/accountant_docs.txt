@@ -1,0 +1,135 @@
+================================================================================
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG DENTAL CARE AI - PHÂN HỆ KẾ TOÁN (ACCOUNTANT)
+================================================================================
+
+Tài liệu này cung cấp chi tiết toàn bộ các tính năng, giao diện và quy trình thao tác dành riêng cho người dùng có vai trò Kế toán (Accountant) trên hệ thống Dental Care AI. Dữ liệu tài liệu được trích xuất trực tiếp từ mã nguồn giao diện React (.jsx) của phân hệ Kế toán.
+
+--------------------------------------------------------------------------------
+MỤC LỤC
+--------------------------------------------------------------------------------
+1. Tổng quan Giao diện & Điều hướng (AccountantDashboard.jsx)
+2. Báo cáo Thống kê Tài chính Kế toán (AccountantReportManagement.jsx)
+3. Quản lý Hóa đơn & Thanh toán (AccountantInvoiceManagement.jsx)
+4. Quản lý Mã giảm giá & Chương trình Ưu đãi (AccountantInvoiceManagement.jsx)
+5. Đổi Mật khẩu & Tiện ích chung (ChangePassword.jsx & ThemeToggle.jsx)
+
+================================================================================
+1. TỔNG QUAN GIAO DIỆN & ĐIỀU HƯỚNG (AccountantDashboard.jsx)
+================================================================================
+- Cấu trúc giao diện:
+  Giao diện Kế toán bao gồm một Thanh điều hướng dọc (Sidebar) cố định phía bên trái (hoặc phía trên trên thiết bị di động) và Khu vực hiển thị nội dung chính phía bên phải.
+
+- Danh mục các Tab chức năng trên Sidebar:
+  1. 📊 Báo cáo Thống kê (Tab 'reports')
+  2. 🧾 Quản lý Hóa đơn & Ưu đãi (Tab 'invoices')
+  3. 🔑 Đổi mật khẩu (Tab 'security')
+
+- Thông tin tài khoản & Bảng điều khiển góc dưới Sidebar:
+  + Hiển thị Tên người dùng đang đăng nhập (full_name) hoặc Email.
+  + Hiển thị nhãn Vai trò (ROLE) của tài khoản đang đăng nhập (Accountant Portal / ACCOUNTANT).
+  + Nút Chuyển đổi Giao diện Tối/Sáng (ThemeToggle).
+  + Nút 🚪 Đăng xuất khỏi hệ thống.
+
+================================================================================
+2. BÁO CÁO THỐNG KÊ TÀI CHÍNH KẾ TOÁN (AccountantReportManagement.jsx)
+================================================================================
+Mục đích: Chuyên biệt theo dõi doanh thu thu về, công nợ chưa thu hồi, lượt thanh toán, doanh thu phân tích theo dịch vụ và xuất file báo cáo định dạng TXT / DOC.
+
+A. BỘ LỌC THỜI GIAN VÀ CHỈ SỐ TỔNG QUAN:
+1. Bộ lọc Khoảng thời gian:
+   - Cho phép Kế toán chọn khoảng thời gian tổng hợp báo cáo: 7 ngày qua, 30 ngày qua (mặc định), hoặc 90 ngày qua.
+2. Thẻ Thống kê Tài chính Tổng quan (Overview Cards):
+   - Doanh thu thu về (revenue): Tổng số tiền đã thanh toán thực nhận.
+   - Công nợ còn nợ (outstanding): Tổng số tiền còn thiếu / chưa thu hồi từ bệnh nhân.
+   - Số lượt thanh toán (completed_appointments): Tổng số lượt hoàn thành thanh toán.
+
+B. PHÂN TÍCH DOANH THU DỊCH VỤ & DANH SÁCH HÓA ĐƠN:
+1. Doanh thu theo Dịch vụ:
+   - Hiển thị danh sách dịch vụ kèm Số lượt khám và Doanh thu thu được tương ứng theo khoảng thời gian chọn.
+   - Phân trang: 5 bản ghi dịch vụ / trang.
+2. Hóa đơn 14 ngày gần nhất:
+   - Danh sách các hóa đơn được lập trong vòng 14 ngày gần đây, hiển thị Mã HĐ (#id), Tên khách hàng/Bệnh nhân, Thành tiền và Trạng thái thanh toán (Đã thanh toán / Chưa thanh toán).
+   - Phân trang: 5 hóa đơn / trang.
+
+C. XUẤT FILE BÁO CÁO TÀI CHÍNH (TXT & DOC):
+1. Xuất TXT Báo cáo:
+   - Nhấn nút "📄 Xuất TXT Báo cáo". Hệ thống tạo và tải về file `.txt` (Bao_Cao_Tai_Chinh_X_ngay_YYYY-MM-DD.txt) chứa cấu trúc văn bản chi tiết gồm Tổng quan tài chính, Doanh thu dịch vụ và Danh sách hóa đơn 14 ngày gần nhất.
+2. Xuất DOC Báo cáo:
+   - Nhấn nút "📝 Xuất DOC Báo cáo". Hệ thống tạo và tải về file định dạng `.doc` Word (Bao_Cao_Tai_Chinh_X_ngay_YYYY-MM-DD.doc) chứa bảng dữ liệu HTML được định dạng font 'Times New Roman' chuẩn y khoa và kế toán.
+
+================================================================================
+3. QUẢN LÝ HÓA ĐƠN & THANH TOÁN (AccountantInvoiceManagement.jsx)
+================================================================================
+Mục đích: Ghi nhận thu tiền theo từng đợt/lượt, xem lịch sử các lượt thanh toán chi tiết, tìm kiếm nâng cao hóa đơn và theo dõi công nợ bệnh nhân.
+
+A. DANH SÁCH HÓA ĐƠN VÀ BỘ LỌC TABS:
+1. Phân loại theo Tabs:
+   - Tab "Tất cả": Hiển thị toàn bộ hóa đơn trong CSDL.
+   - Tab "Hôm nay": Hiển thị các hóa đơn được khởi tạo trong ngày hiện tại.
+   - Tab "Đã thanh toán": Hiển thị các hóa đơn đã trả đủ tiền (status = 'paid' hoặc số tiền đã trả >= thực thu).
+   - Tab "Chưa thanh toán / Nợ": Hiển thị hóa đơn chưa thanh toán hoặc mới thanh toán 1 phần.
+2. Hiển thị Badge số lượng:
+   - Mỗi tab đều có huy hiệu (badge) hiển thị tổng số lượng hóa đơn tương ứng với bộ lọc.
+3. Cột thông tin hiển thị:
+   - Mã HĐ (#id), Bệnh nhân, Bác sĩ phụ trách, Tổng tiền nguyên giá, Chiết khấu, Thực thu, Đã trả (kèm số lượt thanh toán), Trạng thái (Đã thanh toán / Thanh toán 1 phần / Chưa thanh toán), Ngày tạo, Thao tác.
+4. Phân trang: Hiển thị 10 hóa đơn trên mỗi trang.
+
+B. THAO TÁC THU TIỀN THEO ĐỢT (THÀNH TOÁN LŨY KẾ):
+- Nhấn nút "Thanh toán" tại hóa đơn chưa trả đủ tiền.
+- Trong Modal Thu tiền Hóa đơn:
+  * Áp dụng Mã giảm giá: Chọn chương trình ưu đãi trong danh sách Droplist (tự động tính Tỷ lệ % hoặc Số tiền giảm direct) HOẶC tự nhập Tỷ lệ giảm (%)/Tiền giảm trực tiếp (đ) thủ công.
+  * Nhập Lý do chiết khấu (nếu có).
+  * Khung tính toán tài chính hiển thị: Tổng nguyên giá ➔ Chiết khấu giảm giá ➔ Đã thanh toán các đợt trước ➔ Số tiền còn nợ.
+  * Nhập Số tiền thu đợt này (VNĐ) (*): Bắt buộc nhập tối thiểu 1đ và tối đa bằng số tiền còn nợ.
+  * Chọn Phương thức thanh toán (*): Tiền mặt, Chuyển khoản / QR Code, Thẻ ATM / Tín dụng.
+  * Nhấn "Xác nhận thu tiền": Hệ thống ghi nhận lượt thanh toán mới (ví dụ: Lần 1, Lần 2...), cập nhật lũy kế số tiền đã trả và tự động chuyển trạng thái hóa đơn sang "Đã thanh toán" (nếu trả đủ) hoặc "Thanh toán 1 phần".
+
+C. XEM CHI TIẾT HÓA ĐƠN & BẢNG LỊCH SỬ LƯỢT THANH TOÁN:
+- Nhấn biểu tượng "ⓘ" tại dòng hóa đơn.
+- Màn hình hiển thị:
+  * Thông tin chung: Bệnh nhân, Bác sĩ điều trị, Mã Hồ sơ bệnh án, Mã ưu đãi áp dụng.
+  * Chi tiết Dịch vụ Nha khoa: Bảng dịch vụ, Số lượng, Đơn giá, Thành tiền.
+  * Lịch sử các đợt / lượt thanh toán (Bảng chi tiết Lượt thanh toán): Hiển thị Lượt # (Lần 1, Lần 2...), Mã giao dịch (#PAY-id), Thời gian thanh toán, Số tiền thu đợt đó, Phương thức thanh toán và Ghi chú.
+  * Bảng Tổng kết tài chính lũy kế: Tổng nguyên giá, Chiết khấu, Thực thu (Nợ cần thu), Lũy kế đã thanh toán (số lượt TT) và Số tiền còn thiếu.
+
+D. BỘ LỌC TÌM KIẾM NÂNG CAO:
+- Nhấn nút "🔍 Tìm kiếm".
+- Trong Modal Tìm kiếm Hóa đơn, cho phép lọc kết hợp theo:
+  * Mã Hóa đơn (có gợi ý Autocomplete)
+  * Tên Bệnh nhân (có gợi ý Autocomplete)
+  * Bác sĩ phụ trách (có gợi ý Autocomplete)
+  * Ngày lập hóa đơn
+- Nhấn "Áp dụng tìm kiếm" để hiển thị kết quả. Nhấn "✕ Hủy tìm kiếm" trên thanh công cụ để xóa bộ lọc.
+
+================================================================================
+4. QUẢN LÝ MÃ GIẢM GIÁ & CHƯƠNG TRÌNH ƯU ĐÃI (AccountantInvoiceManagement.jsx)
+================================================================================
+Mục đích: Tạo mới, cập nhật và quản lý trạng thái kích hoạt của các chương trình khuyến mãi/mã giảm giá dùng khi lập hóa đơn.
+
+A. CÁC THAO TÁC QUẢN LÝ MÃ GIẢM GIÁ:
+1. Mở Cửa sổ Quản lý Ưu đãi:
+   - Nhấn nút "🎁 Quản lý Mã giảm giá" trên thanh công cụ chính.
+2. Tạo mới Mã giảm giá:
+   - Điền thông tin trong Form:
+     * Mã Ưu đãi (*) (Tự động in hoa, ví dụ: KHUYENMAI2026)
+     * Tên chương trình (*) (VD: Tri ân khách hàng)
+     * Tỷ lệ giảm (%) (nhập từ 0 đến 100)
+     * Số tiền giảm trực tiếp (đ) (nhập số tiền cố định)
+     * Mô tả chương trình
+   - Nhấn "Lưu chương trình".
+3. Cập nhật Mã giảm giá:
+   - Tại bảng danh sách mã ưu đãi phía dưới, nhấn nút "Sửa" tại dòng tương ứng. Form sẽ load lại dữ liệu cũ để Kế toán chỉnh sửa, sau đó nhấn "Cập nhật mã".
+4. Ngừng cung cấp / Kích hoạt lại Mã giảm giá:
+   - Nhấn nút "Ngừng cung cấp" hoặc "Kích hoạt lại" tại dòng mã ưu đãi. Hệ thống sẽ thay đổi trạng thái is_active tương ứng.
+
+================================================================================
+5. ĐỔI MẬT KHẨU & TIỆN ÍCH CHUNG (ChangePassword.jsx & ThemeToggle.jsx)
+================================================================================
+1. Đổi mật khẩu cá nhân (ChangePassword):
+   - Nằm tại Tab "Đổi mật khẩu" (Security).
+   - Cho phép Kế toán tự đổi mật khẩu tài khoản đang đăng nhập bằng cách nhập Mật khẩu hiện tại, Mật khẩu mới (tối thiểu 6 ký tự, không trùng mật khẩu cũ) và Xác nhận mật khẩu mới.
+
+2. Tiện ích Giao diện (ThemeToggle):
+   - Đặt tại góc dưới thanh Sidebar.
+   - Cho phép chuyển đổi linh hoạt giữa Giao diện Sáng (Light Mode) và Giao diện Tối (Dark Mode) cho toàn bộ ứng dụng.
+================================================================================

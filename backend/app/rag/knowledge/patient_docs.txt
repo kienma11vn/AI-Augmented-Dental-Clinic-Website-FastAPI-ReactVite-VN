@@ -1,0 +1,178 @@
+================================================================================
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG DENTAL CARE AI - PHÂN HỆ BỆNH NHÂN (PATIENT)
+================================================================================
+
+Tài liệu này cung cấp chi tiết toàn bộ các tính năng, giao diện và quy trình thao tác dành riêng cho người dùng có vai trò Bệnh nhân (Patient) trên hệ thống Dental Care AI. Dữ liệu tài liệu được trích xuất trực tiếp từ mã nguồn giao diện React (.jsx) của phân hệ Bệnh nhân.
+
+--------------------------------------------------------------------------------
+MỤC LỤC
+--------------------------------------------------------------------------------
+1. Tổng quan Giao diện & Điều hướng (PatientDashboard.jsx)
+2. Quản lý Lịch hẹn Khám (PatientAppointments.jsx)
+3. Tra cứu Lịch sử Điều trị & Hồ sơ Bệnh lý (PatientTreatmentHistory.jsx)
+4. Tra cứu Danh mục Dịch vụ Nha khoa (PatientServicesList.jsx)
+5. Quản lý Thông tin Cá nhân (PatientProfileInfo.jsx)
+6. Đổi Mật khẩu & Tiện ích chung (ChangePassword.jsx & ThemeToggle.jsx)
+
+================================================================================
+1. TỔNG QUAN GIAO DIỆN & ĐIỀU HƯỚNG (PatientDashboard.jsx)
+================================================================================
+- Cấu trúc giao diện:
+  Giao diện Bệnh nhân bao gồm một Thanh điều hướng dọc (Sidebar) cố định phía bên trái (hoặc phía trên trên thiết bị di động) và Khu vực hiển thị nội dung chính phía bên phải.
+
+- Danh mục các Tab chức năng trên Sidebar:
+  1. 📅 Quản lý lịch hẹn (Tab 'appointments')
+  2. 🩺 Lịch sử điều trị (Tab 'records')
+  3. 🦷 Tra cứu dịch vụ (Tab 'services')
+  4. 👤 Thông tin cá nhân (Tab 'profile')
+  5. 🔑 Đổi mật khẩu (Tab 'security')
+
+- Thông tin tài khoản & Bảng điều khiển góc dưới Sidebar:
+  + Hiển thị Tên người dùng đang đăng nhập (full_name) hoặc Email.
+  + Hiển thị nhãn Vai trò (ROLE) của tài khoản đang đăng nhập (Bệnh nhân / Patient Portal).
+  + Nút Chuyển đổi Giao diện Tối/Sáng (ThemeToggle).
+  + Nút 🚪 Đăng xuất khỏi hệ thống.
+
+================================================================================
+2. QUẢN LÝ LỊCH HẸN KHÁM (PatientAppointments.jsx)
+================================================================================
+Mục đích: Hỗ trợ Bệnh nhân thực hiện các thao tác đăng ký đặt lịch khám mới, theo dõi lịch hẹn sắp tới, tra cứu lịch sử hẹn khám, sửa/hủy lịch hẹn, xem thông tin hóa đơn, đánh giá phản hồi dịch vụ và nhận thông báo nhắc lịch từ AI.
+
+A. BẢNG TABS VÀ QUẢN LÝ DANH SÁCH LỊCH HẸN:
+1. Phân loại danh sách theo Tabs:
+   - Tab "Lịch khám sắp tới": Hiển thị các lịch hẹn Đã xác nhận (confirmed) hoặc Đã check-in (checkin) nằm trong thời gian hôm nay hoặc tương lai. Tự động sắp xếp theo thời gian tăng dần.
+   - Tab "Chờ phòng khám xác nhận": Hiển thị các lịch hẹn mới tạo ở trạng thái Chờ xác nhận (scheduled).
+   - Tab "Lịch sử khám (90 ngày)": Hiển thị danh sách lịch hẹn Đã hoàn thành (completed) trong vòng 90 ngày gần đây. Tự động sắp xếp theo thời gian mới nhất.
+   - Tab "Lịch đã hủy": Hiển thị các lịch hẹn đã bị Hủy (cancelled) trong vòng 90 ngày gần đây.
+
+2. Cột thông tin hiển thị trong bảng:
+   - Mã lịch (#id), Bác sĩ phụ trách, Ghế khám, Thời gian khám, Trạng thái (Đã xác nhận, Đã check-in, Chờ xác nhận, Đã hủy, Đã hoàn thành), Thao tác.
+
+3. Phân trang:
+   - Mỗi trang hiển thị tối đa 10 bản ghi lịch hẹn. Khi chuyển Tab, hệ thống tự động quay về Trang 1.
+
+B. QUY TẮC NGHIỆP VỤ & RÀNG BUỘC THỜI GIAN:
+1. Kiểm tra trùng lịch hẹn Client-side (checkConflictClientSide):
+   - Hệ thống tự động kiểm tra thời gian giao nhau giữa lịch hẹn đăng ký mới/sửa với các lịch hiện có trong CSDL.
+   - Trùng lịch xảy ra nếu cùng một Bác sĩ HOẶC cùng một Ghế khám bị trùng khoảng thời gian (Start_Mới < End_Cũ AND End_Mới > Start_Cũ). Các lịch hẹn đã bị Hủy sẽ không tính vào trùng lịch.
+
+2. Quy tắc thời gian & Khung giờ khám:
+   - Khung giờ làm việc hành chính: Từ 08:00 đến 17:00.
+   - Các khung giờ cố định chọn sẵn (TIME_SLOTS): 08:00, 08:30, 09:00, 09:30, 10:00, 10:30, 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00.
+   - Giới hạn thời gian đặt/sửa lịch: Phải thực hiện trước thời gian bắt đầu khám ít nhất 8 tiếng. Không cho phép đặt/sửa lịch khám cho thời gian đã qua trong quá khứ.
+   - Thời lượng mặc định mỗi ca khám: 60 phút (1 tiếng). Khi chọn giờ bắt đầu, hệ thống tự động tính giờ kết thúc.
+
+3. Nhận diện trạng thái Ghế khám tạm dừng:
+   - Ghế khám bị coi là Tạm dừng nếu is_active === false hoặc thuộc trạng thái paused, tạm dừng, inactive, maintenance, bảo trì. Các ghế này sẽ bị vô hiệu hóa (disabled) không cho chọn.
+
+C. CÁC THAO TÁC CƠ BẢN:
+1. Đặt lịch khám mới:
+   - Nhấn nút "➕ Đặt lịch khám mới".
+   - Trong Modal, chọn Bác sĩ phụ trách (*), Ghế khám (*), Dịch vụ khám (*), Ngày khám (*), Khung giờ bắt đầu (*).
+   - Tiện ích AI: Nhấn nút "🤖 Giải thích dịch vụ bằng AI" để Gemini AI phân tích và đưa ra giải thích chi tiết về gói dịch vụ đã chọn.
+   - Nhập Ghi chú bổ sung (nếu có) và nhấn "Xác nhận đặt lịch". Lịch tạo thành công sẽ ở trạng thái Chờ phòng khám xác nhận (scheduled).
+
+2. Tra cứu & Tìm kiếm lịch khám:
+   - Nhấn nút "🔍 Tìm kiếm lịch khám".
+   - Trong Modal, cho phép lọc kết hợp theo: Trạng thái lịch, Bác sĩ phụ trách, Ngày khám. Nhấn nút "Tìm kiếm" để hiển thị danh sách kết quả.
+
+3. Chỉnh sửa lịch khám:
+   - Nhấn nút "Sửa" tại dòng lịch hẹn thuộc tab "Chờ phòng khám xác nhận".
+   - Cho phép thay đổi Bác sĩ, Ghế khám, Ngày khám, Khung giờ bắt đầu và Ghi chú. Hệ thống kiểm tra trùng lịch và ràng buộc trước 8 tiếng trước khi lưu.
+   - Lưu ý: Lịch hẹn đã qua thời gian khám sẽ bị vô hiệu hóa nút Sửa.
+
+4. Hủy lịch khám:
+   - Nhấn nút "Hủy" tại lịch hẹn thuộc tab "Lịch khám sắp tới" hoặc "Chờ phòng khám xác nhận".
+   - Nhập Lý do hủy lịch (*) trong Modal xác nhận và nhấn "Xác nhận Hủy". Hệ thống ghi nhận thêm nhãn `[Bệnh nhân hủy] <Lý do>` vào ghi chú lịch hẹn.
+   - Lưu ý: Không thể hủy lịch hẹn đã check-in hoặc lịch hẹn đã qua thời gian khám.
+
+5. Đặt lại lịch khám (Rebook):
+   - Nhấn nút "Đặt lại" đối với lịch hẹn đã bị Hủy. Hệ thống tự động mở Modal Đặt lịch khám mới và điền sẵn thông tin Bệnh nhân, Bác sĩ, Ghế khám từ lịch cũ.
+
+6. Xem chi tiết lịch khám & Phân tích dịch vụ AI:
+   - Nhấn biểu tượng "ⓘ" (Xem chi tiết).
+   - Màn hình hiển thị Bác sĩ đảm nhận, Ghế khám, Thời gian khám, Dịch vụ đăng ký, Ghi chú lịch khám, Lý do hủy (nếu có).
+   - Nhấn nút "🤖 Giải thích dịch vụ bằng AI" để nhận phân tích chi tiết về dịch vụ.
+
+7. Đánh giá & Phản hồi dịch vụ (Rating & Feedback):
+   - Trong Modal Chi tiết lịch khám của các lịch hẹn Đã hoàn thành (completed):
+   - Bệnh nhân chọn Đánh giá mức độ hài lòng từ 1 đến 5 điểm (1-5 sao).
+   - Nhập Nhận xét / Phản hồi chi tiết về bác sĩ, thái độ phục vụ hoặc kết quả khám.
+   - Nhấn nút "💾 Lưu đánh giá & Phản hồi".
+
+8. Xem Hóa đơn thanh toán:
+   - Nhấn nút "Xem hóa đơn" tại lịch hẹn đã hoàn thành.
+   - Modal hiển thị Mã hóa đơn, Trạng thái thanh toán (Đã thanh toán / Thanh toán 1 phần / Chưa thanh toán), Mã hồ sơ bệnh lý, Mã giảm giá (nếu có), Bảng chi tiết dịch vụ (Tên dịch vụ, SL, Đơn giá, Thành tiền), Tổng tiền dịch vụ, Giảm giá/Chiết khấu, và Tổng thanh toán thực tế.
+
+D. CỬA SỔ THÔNG BÁO VÀ NHẮC LỊCH TÁI KHÁM AI:
+- Nhấn biểu tượng Quả chuông 🔔 trên thanh điều khiển.
+- Tab "Thay đổi lịch": Cảnh báo tự động các thay đổi về Bệnh nhân, Bác sĩ, Ghế khám, Thời gian khám, Trạng thái lịch hoặc lý do hủy lịch.
+- Tab "Nhắc lịch khám": Hiển thị các thông báo nhắc lịch từ CSDL và các tin nhắn nhắc lịch tái khám được sinh tự động từ AI (Gemini AI).
+- Đặt lịch trực tiếp từ nhắc lịch AI: Tại thẻ nhắc lịch AI, nhấn nút "📅 Đặt lịch ngay" để tự động điền thông tin Bác sĩ, Dịch vụ và Ghi chú gợi ý vào Form Đặt lịch mới.
+
+================================================================================
+3. TRA CỨU LỊCH SỬ ĐIỀU TRỊ & HỒ SƠ BỆNH LÝ (PatientTreatmentHistory.jsx)
+================================================================================
+Mục đích: Tra cứu thông tin chi tiết các hồ sơ bệnh án, tiến trình điều trị, hóa đơn thanh toán và xem tóm tắt bệnh án thông minh từ AI.
+
+A. PHÂN LOẠI TAB VÀ TÌM KIẾM HỒ SƠ:
+1. Phân loại theo Tabs:
+   - Tab "⏱️ Đang theo dõi (14 ngày)": Hiển thị hồ sơ bệnh án được khởi tạo trong vòng 14 ngày gần đây.
+   - Tab "📁 Đã khám (90 ngày)": Hiển thị các hồ sơ bệnh án được khởi tạo trong khoảng từ 15 đến 90 ngày trước.
+2. Tìm kiếm hồ sơ:
+   - Ô tìm kiếm hỗ trợ tra cứu trực tiếp theo Tên bác sĩ, Chẩn đoán, Mã hồ sơ (#id) hoặc Tên dịch vụ.
+3. Phân trang: Hiển thị 10 hồ sơ điều trị trên mỗi trang.
+
+B. THÔNG TIN HIỂN THỊ VÀ THAO TÁC CHI TIẾT:
+1. Bảng danh sách hồ sơ:
+   - Cột hiển thị: Mã HS (#id), Ngày khám, Bác sĩ phụ trách, Chẩn đoán/Mô tả, Trạng thái Hóa đơn (Đã thanh toán / Thanh toán 1 phần / Chưa thanh toán / Chưa phát hành), Lịch hẹn tái khám, Thao tác.
+2. Modal Xem Chi tiết Hồ sơ Điều trị:
+   - Nhấn biểu tượng "ⓘ".
+   - Màn hình hiển thị: Thông tin Bác sĩ phụ trách & Chuyên khoa, Lịch hẹn tái khám dự kiến, Chẩn đoán / Mô tả triệu chứng, Ghi chú điều trị / Đơn thuốc dặn dò.
+   - Bảng chi tiết dịch vụ đã thực hiện: Tên dịch vụ, Số lượng, Đơn giá, Thành tiền.
+   - Khung Hóa đơn thanh toán liên kết: Mã HĐ, Tổng tiền dịch vụ, Chiết khấu, Thành tiền thanh toán, Số tiền đã trả, Phương thức thanh toán.
+3. Trợ lý AI Tóm tắt Bệnh án Thông minh (Gemini AI):
+   - Trong Modal Chi tiết hồ sơ, Bệnh nhân nhấn nút "🤖 Cập nhật AI".
+   - Gemini AI tự động phân tích tiến trình điều trị, chẩn đoán, đơn thuốc và tạo ra đoạn tóm tắt ngắn gọn, dễ hiểu (ai_summary).
+
+================================================================================
+4. TRA CỨU DANH MỤC DỊCH VỤ NHA KHOA (PatientServicesList.jsx)
+================================================================================
+Mục đích: Cung cấp bảng giá niêm yết, thông tin chi tiết và tính năng giải thích dịch vụ bằng AI cho bệnh nhân tham khảo.
+
+A. THAO TÁC TRA CỨU BẢNG GIÁ DỊCH VỤ:
+1. Danh sách Dịch vụ:
+   - Cột hiển thị: Mã DV, Tên dịch vụ, Mô tả, Đơn giá (đã định dạng VNĐ), Trạng thái (Đang áp dụng / Ngừng cung cấp), Thao tác.
+   - Phân trang: Hiển thị 10 dịch vụ / trang.
+2. Tìm kiếm Dịch vụ:
+   - Nhập từ khóa vào ô tìm kiếm để tra cứu theo Tên dịch vụ hoặc Mã dịch vụ.
+3. Trợ lý AI Giải thích Dịch vụ Nha khoa:
+   - Tại dòng dịch vụ, Bệnh nhân nhấn nút "✨ Giải thích dịch vụ bằng AI".
+   - Gemini AI sẽ phân tích tên dịch vụ và mô tả, sau đó hiển thị thông báo giải thích chi tiết, ngắn gọn về quy trình kỹ thuật và công dụng của gói dịch vụ đó.
+
+================================================================================
+5. QUẢN LÝ THÔNG TIN CÁ NHÂN (PatientProfileInfo.jsx)
+================================================================================
+Mục đích: Giúp Bệnh nhân xem và tự cập nhật hồ sơ thông tin cá nhân của mình trên hệ thống.
+
+A. PHÂN LOẠI THÔNG TIN VÀ CÁC BƯỚC THAO TÁC:
+1. Thông tin Định danh & Tài khoản (Chế độ Chỉ xem - Không thể thay đổi):
+   - Mã bệnh nhân (định dạng `BN-XXXXX`), Email / Tên tài khoản, Số CCCD / CMND.
+2. Thông tin Cá nhân có thể Cập nhật:
+   - Họ và tên (*), Số điện thoại (*), Ngày sinh, Giới tính (Nam / Nữ / Khác), Địa chỉ thường trú, Tiền sử bệnh lý / Ghi chú sức khỏe (dị ứng, tim mạch, tiểu đường...).
+3. Quy trình Cập nhật Thông tin:
+   - Nhấn nút "✏️ Cập nhật thông tin" để mở chế độ chỉnh sửa.
+   - Thay đổi các trường thông tin cần thiết.
+   - Nhấn nút "💾 Lưu thay đổi". Hệ thống thực hiện lưu vào hồ sơ bệnh nhân và tự động đồng bộ sang tài khoản đăng nhập (User). Nhấn "Hủy bỏ" nếu không muốn lưu.
+
+================================================================================
+6. ĐỔI MẬT KHẨU & TIỆN ÍCH CHUNG (ChangePassword.jsx & ThemeToggle.jsx)
+================================================================================
+1. Đổi mật khẩu cá nhân (ChangePassword):
+   - Nằm tại Tab "Đổi mật khẩu" (Security).
+   - Cho phép Bệnh nhân tự đổi mật khẩu tài khoản đang đăng nhập bằng cách nhập Mật khẩu hiện tại, Mật khẩu mới (tối thiểu 6 ký tự, không trùng mật khẩu cũ) và Xác nhận mật khẩu mới.
+
+2. Tiện ích Giao diện (ThemeToggle):
+   - Đặt tại góc dưới thanh Sidebar.
+   - Cho phép chuyển đổi linh hoạt giữa Giao diện Sáng (Light Mode) và Giao diện Tối (Dark Mode) cho toàn bộ ứng dụng.
+================================================================================

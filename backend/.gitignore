@@ -1,0 +1,26 @@
+# Biến môi trường & thông tin bảo mật
+.env
+.env.*
+!.env.example
+
+# File lưu vết Hash SHA256 cho Docker
+.last_build_hash
+
+# Python & Môi trường ảo
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Testing & Báo cáo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Cấu hình IDE / Hệ điều hành
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

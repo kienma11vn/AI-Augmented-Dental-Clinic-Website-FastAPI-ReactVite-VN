@@ -1,0 +1,165 @@
+================================================================================
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG DENTAL CARE AI - PHÂN HỆ BÁC SĨ (DOCTOR)
+================================================================================
+
+Tài liệu này cung cấp chi tiết toàn bộ các tính năng, giao diện và quy trình thao tác dành riêng cho người dùng có vai trò Bác sĩ (Doctor) trên hệ thống Dental Care AI. Dữ liệu tài liệu được trích xuất trực tiếp từ mã nguồn giao diện React (.jsx) của phân hệ Bác sĩ.
+
+--------------------------------------------------------------------------------
+MỤC LỤC
+--------------------------------------------------------------------------------
+1. Tổng quan Giao diện & Điều hướng (DoctorDashboard.jsx)
+2. Quản lý Lịch khám Bác sĩ (DoctorScheduleManagement.jsx)
+3. Thông tin Bệnh nhân của Bác sĩ (DoctorPatientInformation.jsx)
+4. Quản lý Hồ sơ Điều trị (DoctorTreatmentRecords.jsx)
+5. Đổi Mật khẩu & Tiện ích chung (ChangePassword.jsx & ThemeToggle.jsx)
+
+================================================================================
+1. TỔNG QUAN GIAO DIỆN & ĐIỀU HƯỚNG (DoctorDashboard.jsx)
+================================================================================
+- Cấu trúc giao diện:
+  Giao diện Bác sĩ bao gồm một Thanh điều hướng dọc (Sidebar) cố định phía bên trái (hoặc phía trên trên thiết bị di động) và Khu vực hiển thị nội dung chính phía bên phải.
+
+- Danh mục các Tab chức năng trên Sidebar:
+  1. 📅 Lịch khám (Tab 'schedule')
+  2. 📋 Thông tin bệnh nhân (Tab 'patients')
+  3. 🩺 Hồ sơ điều trị (Tab 'records')
+  4. 🔑 Đổi mật khẩu (Tab 'security')
+
+- Thông tin tài khoản & Bảng điều khiển góc dưới Sidebar:
+  + Hiển thị Tên người dùng đang đăng nhập (full_name) hoặc Email.
+  + Hiển thị nhãn Vai trò (ROLE) của tài khoản đang đăng nhập (Bác sĩ / Doctor Portal).
+  + Nút Chuyển đổi Giao diện Tối/Sáng (ThemeToggle).
+  + Nút 🚪 Đăng xuất khỏi hệ thống.
+
+================================================================================
+2. QUẢN LÝ LỊCH KHÁM BÁC SĨ (DoctorScheduleManagement.jsx)
+================================================================================
+Mục đích: Hỗ trợ Bác sĩ theo dõi danh sách lịch hẹn khám bệnh do mình phụ trách, thực hiện hoàn thành lượt khám, lập hồ sơ bệnh lý, đặt lịch tái khám, hủy lịch hẹn và nhận thông báo cập nhật lịch khám.
+
+A. BẢNG TABS VÀ QUẢN LÝ DANH SÁCH LỊCH HẸN:
+1. Phân loại danh sách theo Tabs:
+   - Tab "☀️ Hôm nay": Hiển thị các lịch hẹn trong ngày hiện tại do Bác sĩ phụ trách có trạng thái Đã xác nhận (confirmed) hoặc Đã check-in (checkin).
+   - Tab "📅 7 ngày tới": Hiển thị các lịch hẹn trong vòng 7 ngày tới (không tính ngày hôm nay) có trạng thái Chờ xác nhận (scheduled), Đã xác nhận (confirmed) hoặc Đã check-in (checkin).
+   - Tab "✅ Đã khám (14 ngày qua)": Hiển thị danh sách lịch hẹn Đã hoàn thành (completed) trong vòng 14 ngày gần đây.
+
+2. Phân trang:
+   - Mỗi trang hiển thị tối đa 10 bản ghi lịch hẹn. Khi chuyển Tab, hệ thống tự động quay về Trang 1.
+
+B. QUY TẮC NGHIỆP VỤ & KIỂM TRA TỰ ĐỘNG:
+1. Kiểm tra trùng lịch hẹn Client-side (checkConflictClientSide):
+   - Hệ thống tự động kiểm tra thời gian giao nhau giữa lịch tái khám tạo mới với danh sách lịch hẹn hiện có trong CSDL.
+   - Trùng lịch xảy ra nếu cùng Bác sĩ HOẶC cùng Ghế khám bị trùng khoảng thời gian (Start_Mới < End_Cũ AND End_Mới > Start_Cũ). Các lịch hẹn đã bị Hủy sẽ không tính vào trùng lịch.
+
+2. Quy tắc thời gian & Khung giờ khám:
+   - Khung giờ làm việc hành chính: Từ 08:00 đến 17:00.
+   - Các khung giờ cố định chọn sẵn (TIME_SLOTS): 08:00, 08:30, 09:00, 09:30, 10:00, 10:30, 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00.
+   - Giới hạn thời gian: Không cho phép đặt lịch tái khám cho thời gian đã qua trong quá khứ.
+
+3. Nhận diện trạng thái Ghế khám tạm dừng:
+   - Ghế khám bị coi là Tạm dừng nếu is_active === false hoặc thuộc trạng thái paused, tạm dừng, inactive, maintenance, bảo trì. Các ghế này sẽ bị vô hiệu hóa (disabled) không cho chọn khi đặt lịch tái khám.
+
+4. Phân tách Dịch vụ và Ghi chú:
+   - Hệ thống tự động trích xuất thông tin dịch vụ thực hiện từ Hồ sơ bệnh lý hoặc nhãn `[Dịch vụ: ...]` trong ghi chú lịch khám để hiển thị đầy đủ cho Bác sĩ.
+
+C. CÁC THAO TÁC QUẢN LÝ LỊCH KHÁM:
+1. Xem Chi tiết Lịch khám:
+   - Nhấn biểu tượng "ⓘ" tại dòng lịch hẹn.
+   - Màn hình hiển thị đầy đủ thông tin: Bệnh nhân, Bác sĩ đảm nhận, Ghế khám, Thời gian khám, Trạng thái, Dịch vụ đăng ký, Ghi chú lịch khám, cùng Mức độ hài lòng (đánh giá sao ⭐) và Nhận xét/Phản hồi từ bệnh nhân (đối với lịch hẹn đã hoàn thành).
+
+2. Hoàn thành Lượt khám & Lập Hồ sơ bệnh lý:
+   - Nhấn nút "✔ Hoàn thành" (Nút chỉ kích hoạt đối với lịch hẹn đang ở trạng thái Check-in).
+   - Trong Modal Lập Hồ sơ bệnh lý:
+     * Nhập Chẩn đoán sơ bộ (diagnosis_summary).
+     * Nhập Ghi chú điều trị (treatment_notes).
+     * Chọn Dịch vụ thực hiện (*) từ danh sách.
+     * Lịch hẹn tái khám (Tùy chọn): Nếu muốn hẹn tái khám, chọn Ngày khám, Giờ khám và Ghế khám. Yêu cầu nhập đầy đủ cả 3 thông tin. Hệ thống tự động khởi tạo một lịch hẹn mới trạng thái Đã xác nhận (confirmed) cho đợt tái khám.
+   - Nhấn "Hoàn thành & Lưu". Trạng thái lịch khám chuyển sang COMPLETED và hệ thống tự động ghi nhận thông báo tới bệnh nhân.
+
+3. Hủy Lịch khám:
+   - Nhấn nút "✖ Hủy lịch" (áp dụng cho lịch khám thuộc Tab 7 ngày tới).
+   - Nhập Lý do bác sĩ hủy lịch (*) trong Modal xác nhận. Hệ thống bổ sung ghi chú `[Bác sĩ hủy] <Lý do>` và gửi thông báo hủy tới bệnh nhân.
+
+4. Xem Lịch tái khám:
+   - Nhấn nút "📅 Lịch tái khám" tại danh sách lịch hẹn đã hoàn thành.
+   - Màn hình hiển thị thông tin Tên bệnh nhân và Ngày giờ hẹn tái khám trích xuất từ hồ sơ bệnh lý tương ứng.
+
+D. CỬA SỔ THÔNG BÁO THAY ĐỔI LỊCH KHÁM:
+- Nhấn nút "🔔 Thông báo" góc trên bên phải bảng lịch khám để xem cửa sổ thông báo cập nhật biến động.
+- Hệ thống phát hiện và cảnh báo tự động các sự kiện:
+  1. Thay đổi bệnh nhân.
+  2. Thay đổi bác sĩ phụ trách.
+  3. Thay đổi ghế khám.
+  4. Thay đổi thời gian khám (ngày/giờ khám).
+  5. Thay đổi trạng thái lịch khám hoặc Lễ tân/Bác sĩ/Bệnh nhân hủy lịch.
+- Thông báo chưa đọc sẽ có chấm đỏ cảnh báo; các thông báo đã đọc được lưu giữ và hiển thị trong vòng 14 ngày.
+
+================================================================================
+3. THÔNG TIN BỆNH NHÂN CỦA BÁC SĨ (DoctorPatientInformation.jsx)
+================================================================================
+Mục đích: Tra cứu danh sách và xem thông tin chi tiết của các bệnh nhân do Bác sĩ trực tiếp phụ trách khám và điều trị.
+
+A. BẢNG TABS VÀ QUẢN LÝ DANH SÁCH BỆNH NHÂN:
+1. Phân loại danh sách theo Tabs:
+   - Tab "🕒 Đang theo dõi": Danh sách bệnh nhân do bác sĩ phụ trách đang có lịch hẹn trong ngày hôm nay hoặc tương lai.
+   - Tab "✅ Đã khám (90 ngày)": Danh sách bệnh nhân do bác sĩ phụ trách đã hoàn thành khám trong vòng 90 ngày gần đây.
+
+2. Tải lại dữ liệu:
+   - Nhấn nút "🔄 Tải lại dữ liệu" để làm mới danh sách bệnh nhân từ server.
+
+B. XEM CHI TIẾT THÔNG TIN BỆNH NHÂN:
+- Nhấn biểu tượng "ℹ" tại thẻ thông tin bệnh nhân.
+- Màn hình Modal hiển thị chi tiết:
+  * Họ và tên bệnh nhân.
+  * Tuổi (tự động tính dựa trên ngày sinh).
+  * Giới tính (Nam / Nữ / Chưa cập nhật).
+  * Số điện thoại liên hệ.
+  * Địa chỉ liên hệ.
+  * Tiền sử bệnh lý: Hiển thị chi tiết các thông tin ghi nhận tiền sử bệnh (dị ứng, tim mạch, tiểu đường...) giúp Bác sĩ đưa ra chỉ định điều trị an toàn.
+
+================================================================================
+4. QUẢN LÝ HỒ SƠ ĐIỀU TRỊ (DoctorTreatmentRecords.jsx)
+================================================================================
+Mục đích: Quản lý, xem thông tin chi tiết, chỉnh sửa chẩn đoán/tiến trình điều trị và sử dụng công cụ AI tóm tắt bệnh án thông minh.
+
+A. QUẢN LÝ DANH SÁCH HỒ SƠ & TÌM KIẾM:
+1. Phân loại danh sách theo Tabs:
+   - Tab "📅 Hôm nay": Hiển thị các hồ sơ điều trị được tạo trong ngày hiện tại.
+   - Tab "⏱️ Đang theo dõi (14 ngày)": Hiển thị danh sách hồ sơ điều trị tạo trong vòng 14 ngày gần đây.
+   - Tab "📁 Đã khám (90 ngày)": Hiển thị danh sách hồ sơ điều trị tạo trong vòng 90 ngày gần đây.
+
+2. Tìm kiếm & Lọc hồ sơ:
+   - Ô tìm kiếm hỗ trợ tra cứu trực tiếp theo Tên bệnh nhân, Số điện thoại, Nội dung chẩn đoán hoặc Mã hồ sơ (#id).
+   - Hệ thống tự động chuyển về Trang 1 khi nhập từ khóa tìm kiếm.
+
+3. Phân trang:
+   - Hiển thị 10 bản ghi hồ sơ trên mỗi trang.
+
+B. CÁC THAO TÁC HỒ SƠ ĐIỀU TRỊ:
+1. Xem Chi tiết Hồ sơ Điều trị:
+   - Nhấn biểu tượng "ⓘ" tại dòng hồ sơ tương ứng.
+   - Màn hình hiển thị đầy đủ: Mã hồ sơ, Ngày tạo, Thông tin Bệnh nhân (Họ tên, SĐT, Giới tính, Ngày sinh), Bác sĩ phụ trách, Mã lịch hẹn gốc, Ngày tái khám dự kiến.
+   - Hiển thị Chẩn đoán / Mô tả triệu chứng và Ghi chú điều trị / Đơn thuốc.
+   - Bảng chi tiết các dịch vụ thực hiện (Medical Record Details): Tên dịch vụ, Số lượng, Đơn giá (VNĐ), Thành tiền và Ghi chú đi kèm.
+
+2. Trợ lý AI Tóm tắt Bệnh án Thông minh:
+   - Trong Modal Chi tiết hồ sơ, Bác sĩ nhấn nút "🤖 Cập nhật AI".
+   - Gemini AI tự động phân tích chẩn đoán, ghi chú điều trị và dịch vụ sử dụng để đưa ra đoạn văn tóm tắt ngắn gọn, chuẩn y khoa (ai_summary).
+
+3. Cập nhật / Chỉnh sửa Hồ sơ Điều trị:
+   - Nhấn nút "✏️ Sửa" tại hồ sơ điều trị.
+   - Cập nhật Chẩn đoán / Mô tả triệu chứng (diagnosis_summary).
+   - Cập nhật Ghi chú điều trị / Đơn thuốc (treatment_notes).
+   - Cập nhật Lịch tái khám: Cho phép điều chỉnh Ngày khám và Giờ khám tái khám.
+   - Đồng bộ tự động: Khi lưu cập nhật, hệ thống tự động tìm kiếm và điều chỉnh lại thời gian trong Lịch hẹn tái khám (Appointment) tương ứng của bệnh nhân.
+
+================================================================================
+5. ĐỔI MẬT KHẨU & TIỆN ÍCH CHUNG (ChangePassword.jsx & ThemeToggle.jsx)
+================================================================================
+1. Đổi mật khẩu cá nhân (ChangePassword):
+   - Nằm tại Tab "Đổi mật khẩu" (Security).
+   - Cho phép Bác sĩ tự đổi mật khẩu tài khoản đang đăng nhập bằng cách nhập Mật khẩu hiện tại, Mật khẩu mới (tối thiểu 6 ký tự, không trùng mật khẩu cũ) và Xác nhận mật khẩu mới.
+
+2. Tiện ích Giao diện (ThemeToggle):
+   - Đặt tại góc dưới thanh Sidebar.
+   - Cho phép chuyển đổi linh hoạt giữa Giao diện Sáng (Light Mode) và Giao diện Tối (Dark Mode) cho toàn bộ ứng dụng.
+================================================================================

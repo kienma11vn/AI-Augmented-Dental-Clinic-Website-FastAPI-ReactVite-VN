@@ -1,0 +1,228 @@
+================================================================================
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG DENTAL CARE AI - PHÂN HỆ QUẢN TRỊ VIÊN (ADMIN)
+================================================================================
+
+Tài liệu này cung cấp chi tiết toàn bộ các tính năng, giao diện và quy trình thao tác dành riêng cho người dùng có vai trò Quản trị viên (Admin) trên hệ thống Dental Care AI. Dữ liệu tài liệu được trích xuất trực tiếp từ mã nguồn giao diện React (.jsx) của phân hệ Admin.
+
+--------------------------------------------------------------------------------
+MỤC LỤC
+--------------------------------------------------------------------------------
+1. Tổng quan Giao diện & Điều hướng (AdminDashboard.jsx)
+2. Quản lý Tài khoản (AccountManagement.jsx)
+3. Phân quyền Người dùng - RBAC (RbacManagement.jsx)
+4. Danh mục Dịch vụ Nha khoa (ServiceManagement.jsx)
+5. Danh mục Ghế khám (ChairManagement.jsx)
+6. Báo cáo Thống kê (ReportManagement.jsx)
+7. Nhật ký Hệ thống - Audit Logs (AuditLogManagement.jsx)
+8. Đổi mật khẩu & Tiện ích chung (ChangePassword.jsx & ThemeToggle.jsx)
+
+================================================================================
+1. TỔNG QUAN GIAO DIỆN & ĐIỀU HƯỚNG (AdminDashboard.jsx)
+================================================================================
+- Cấu trúc giao diện:
+  Giao diện Admin bao gồm một Thanh điều hướng dọc (Sidebar) cố định phía bên trái (hoặc phía trên trên thiết bị di động) và Khu vực hiển thị nội dung chính phía bên phải.
+  
+- Danh mục các Tab chức năng trên Sidebar:
+  1. 👥 Quản lý Tài khoản (Tab 'accounts')
+  2. 🛡️ Phân quyền người dùng (RBAC) (Tab 'rbac')
+  3. 🛠️ Danh mục Dịch vụ (Tab 'services')
+  4. 🪑 Danh mục Ghế khám (Tab 'chairs')
+  5. 📊 Báo cáo Thống kê (Tab 'reports')
+  6. 📜 Nhật ký Hệ thống (Audit Logs) (Tab 'logs')
+  7. 🔑 Đổi mật khẩu (Tab 'security')
+
+- Thông tin tài khoản & Bảng điều khiển góc dưới Sidebar:
+  + Hiển thị Tên người dùng đang đăng nhập (full_name) hoặc Email.
+  + Hiển thị nhãn Vai trò (ROLE) của tài khoản đang đăng nhập (ADMIN).
+  + Nút Chuyển đổi Giao diện Tối/Sáng (ThemeToggle).
+  + Nút 🚪 Đăng xuất khỏi hệ thống.
+
+================================================================================
+2. QUẢN LÝ TÀI KHOẢN (AccountManagement.jsx)
+================================================================================
+Mục đích: Quản lý danh sách, tạo mới, chỉnh sửa và thay đổi trạng thái tài khoản của toàn bộ người dùng trong hệ thống (Quản trị viên, Lễ tân, Bác sĩ, Kế toán, Bệnh nhân).
+
+A. CÁC TÍNH NĂNG VÀ THAO TÁC CƠ BẢN:
+1. Xem danh sách tài khoản:
+   - Cột thông tin hiển thị: ID (#id), Họ và tên, Email, Vai trò, Trạng thái (Hoạt động / Đã khóa), Thao tác (Sửa, Khóa/Mở khóa).
+   - Nhãn vai trò (Role Labels) hiển thị theo mã màu:
+     * Quản trị viên (admin): Tím
+     * Lễ tân (receptionist): Xanh dương
+     * Bác sĩ (doctor): Xanh da trời
+     * Kế toán (accountant): Vàng hổ phách
+     * Bệnh nhân (patient): Xám / Slate
+
+2. Tìm kiếm và Lọc dữ liệu:
+   - Ô tìm kiếm: Tìm kiếm trực tiếp theo Tên người dùng hoặc Email.
+   - Bộ lọc Vai trò (Dropdown): Lọc tài khoản theo "Tất cả vai trò", "Quản trị viên (Admin)", "Lễ tân", "Bác sĩ", "Kế toán", "Bệnh nhân".
+   - Phân trang: Hiển thị 10 tài khoản trên mỗi trang. Khi tìm kiếm hoặc đổi bộ lọc vai trò, hệ thống tự động chuyển về Trang 1.
+
+3. Tạo tài khoản mới:
+   - Nhấn nút "+ Tạo tài khoản mới" góc trên bên phải.
+   - Các trường thông tin bắt buộc trong Modal:
+     * Họ và tên (*)
+     * Email (*)
+     * Vai trò (*) (Mặc định chọn: Lễ tân. Chọn trong danh sách: Lễ tân, Bác sĩ, Kế toán, Bệnh nhân, Quản trị viên).
+     * Mật khẩu (*) (Độ dài tối thiểu 6 ký tự).
+   - Trường thông tin mở rộng theo Vai trò:
+     * Nếu chọn Vai trò = Bác sĩ: Hiển thị thêm trường nhập "Chuyên khoa *" (Ví dụ: Chỉnh nha, Nắn chỉnh răng...).
+     * Nếu chọn Vai trò = Bệnh nhân: Hiển thị thêm trường nhập "Số điện thoại *" (Ví dụ: 0987654321).
+   - Tùy chọn tiện ích:
+     * Checkbox "Hiện mật khẩu": Cho phép ẩn/hiện văn bản mật khẩu nhập vào.
+     * Checkbox "Hoạt động": Thiết lập trạng thái kích hoạt tài khoản ngay khi tạo (Mặc định được tích chọn).
+   - Nhấn "Lưu thay đổi" để hoàn tất hoặc "Hủy" để đóng modal.
+
+4. Cập nhật thông tin tài khoản:
+   - Nhấn nút "Sửa" tại dòng tài khoản tương ứng trong bảng.
+   - Hệ thống tự động tải thông tin hiện tại của tài khoản, bao gồm cả Chuyên khoa (nếu là Bác sĩ) hoặc Số điện thoại (nếu là Bệnh nhân).
+   - Ô Mật khẩu mới: Nếu không muốn đổi mật khẩu, người dùng để trống ô này.
+   - Thay đổi các thông tin cần thiết và nhấn "Lưu thay đổi".
+
+5. Khóa / Mở khóa tài khoản:
+   - Nhấn nút "Khóa" (đối với tài khoản đang Hoạt động) hoặc "Mở khóa" (đối với tài khoản Đã khóa).
+   - Hệ thống hiển thị hộp thoại xác nhận: "Bạn có chắc muốn [khóa/mở khóa] tài khoản [email]?". Nhấn Đồng ý để thực hiện.
+
+================================================================================
+3. PHÂN QUYỀN NGƯỜI DÙNG - RBAC (RbacManagement.jsx)
+================================================================================
+Mục đích: Cho phép Quản trị viên cấu hình và tùy chỉnh chi tiết các quyền hạn (Permissions) cho từng Vai trò (Roles) trong hệ thống.
+
+A. QUY TRÌNH THAO TÁC CẤU HÌNH PHÂN QUYỀN:
+1. Bước 1: Chọn Vai trò (Role)
+   - Hệ thống hiển thị danh sách các vai trò khả dụng dưới dạng các thẻ (cards):
+     * Quản trị viên (Admin) - code: admin
+     * Lễ tân - code: receptionist
+     * Bác sĩ - code: doctor
+     * Kế toán - code: accountant
+     * Bệnh nhân - code: patient
+   - Nhấn vào thẻ vai trò cần cấu hình.
+
+2. Bước 2: Tùy chỉnh Danh sách Quyền hạn (Permissions)
+   - Danh sách các quyền hạn được nhóm theo từng Nhóm chức năng (Category).
+   - Thao tác chọn lẻ: Tích chọn hoặc bỏ tích vào checkbox tương ứng với từng quyền hạn.
+   - Thao tác nhanh theo Nhóm:
+     * Nhấn "Chọn tất cả nhóm này" để tích chọn toàn bộ quyền trong nhóm chức năng đó.
+     * Nhấn "Bỏ chọn tất cả nhóm này" để bỏ tích toàn bộ quyền trong nhóm chức năng đó.
+   - Quy tắc bảo mật đặc biệt (Protected Admin Permission):
+     * Đối với Vai trò "Quản trị viên (Admin)", quyền `user:manage` (Quản lý người dùng) là quyền mặc định bảo vệ tối cao, bị khóa (disabled) trên giao diện không thể bỏ chọn nhằm tránh trường hợp Admin tự tước quyền quản trị của chính mình.
+
+3. Bước 3: Lưu cấu hình
+   - Nhấn nút "Lưu cấu hình phân quyền" góc trên bên phải.
+   - Hệ thống sẽ hiển thị thông báo thành công: "Cập nhật quyền thành công cho vai trò [Tên vai trò]" hoặc thông báo lỗi nếu có sự cố.
+
+================================================================================
+4. DANH MỤC DỊCH VỤ NHA KHOA (ServiceManagement.jsx)
+================================================================================
+Mục đích: Quản lý danh mục dịch vụ khám chữa bệnh nha khoa, giá cả và trạng thái cung cấp dịch vụ trong cơ sở dữ liệu.
+
+A. CÁC TÍNH NĂNG VÀ THAO TÁC:
+1. Xem và Quản lý Bảng Dịch vụ:
+   - Các cột hiển thị: Mã DV, Tên Dịch vụ, Mô tả, Đơn giá (VNĐ - đã định dạng phân cách hàng nghìn), Trạng thái (Đang cung cấp / Đã ngừng cung cấp), Thao tác.
+   - Phân trang: Hiển thị 10 bản ghi/trang kèm thanh chuyển trang (Trước, Sau, các số trang).
+
+2. Tìm kiếm dịch vụ:
+   - Ô tìm kiếm hỗ trợ tra cứu trực tiếp theo Mã dịch vụ, Tên dịch vụ hoặc Nội dung mô tả.
+   - Hệ thống tự động chuyển về trang 1 khi nhập từ khóa tìm kiếm.
+
+3. Thêm Dịch vụ Mới:
+   - Nhấn nút "➕ Thêm Dịch vụ Mới".
+   - Nhập thông tin trong Modal:
+     * Mã Dịch vụ (*) (VD: KHAM01)
+     * Tên Dịch vụ (*) (VD: Khám tổng quát)
+     * Đơn giá (VNĐ) (*) (VD: 150000 - nhập số lớn hơn hoặc bằng 0)
+     * Mô tả Dịch vụ (Không bắt buộc)
+   - Nhấn "Lưu vào CSDL" để hoàn tất.
+
+4. Chỉnh sửa thông tin Dịch vụ:
+   - Nhấn nút "✏️ Sửa" tại dịch vụ cần cập nhật.
+   - Thay đổi các thông tin Mã DV, Tên DV, Đơn giá hoặc Mô tả.
+   - Nhấn "Cập nhật CSDL".
+
+5. Ngừng cung cấp / Kích hoạt lại Dịch vụ:
+   - Nhấn nút "🚫 Ngừng cung cấp" (đối với dịch vụ đang hoạt động) hoặc "🔄 Kích hoạt lại" (đối với dịch vụ đang ngừng).
+   - Hệ thống hiển thị thông báo xác nhận hành động. Nhấn OK để thực thi thay đổi trạng thái trong CSDL.
+
+================================================================================
+5. DANH MỤC GHẾ KHÁM (ChairManagement.jsx)
+================================================================================
+Mục đích: Quản lý cơ sở vật chất phòng khám bao gồm danh sách các ghế khám bệnh và vị trí phòng điều trị.
+
+A. CÁC TÍNH NĂNG VÀ THAO TÁC:
+1. Xem danh sách Ghế khám:
+   - Hiển thị thông tin bao gồm: ID (#id), Tên ghế, Phòng/Vị trí, Trạng thái (Hoạt động / Tạm dừng), Thao tác (Sửa, Xóa).
+   - Phân trang: 10 ghế khám trên một trang.
+
+2. Tìm kiếm Ghế khám:
+   - Nhập từ khóa vào ô tìm kiếm để tra cứu theo Tên ghế hoặc Tên phòng.
+
+3. Thêm Ghế khám mới:
+   - Nhấn "+ Thêm ghế khám mới".
+   - Nhập thông tin:
+     * Tên ghế khám (*) (Ví dụ: Ghế khám 01)
+     * Phòng / Vị trí (Ví dụ: Phòng A1)
+     * Checkbox "Hoạt động": Tích chọn nếu ghế sẵn sàng sử dụng.
+   - Nhấn "Lưu thay đổi".
+
+4. Cập nhật Ghế khám:
+   - Nhấn nút "Sửa", chỉnh sửa các thông tin Tên ghế, Phòng hoặc Trạng thái hoạt động, sau đó nhấn "Lưu thay đổi".
+
+5. Xóa Ghế khám:
+   - Nhấn nút "Xóa" tại dòng tương ứng.
+   - Cảnh báo: Hệ thống sẽ đưa ra thông báo xác nhận "Bạn có chắc chắn muốn xóa hoàn toàn ghế '[Tên ghế]' khỏi CSDL? Thao tác này không thể hoàn tác."
+   - Nhấn OK để xóa ghế khám khỏi CSDL.
+
+================================================================================
+6. BÁO CÁO THỐNG KÊ (ReportManagement.jsx)
+================================================================================
+Mục đích: Cung cấp bức tranh toàn cảnh về hoạt động vận hành phòng khám, doanh thu, lượt khám, dịch vụ phổ biến và phản hồi của bệnh nhân.
+
+A. CÁC CHỨC NĂNG BÁO CÁO:
+1. Chọn khoảng thời gian báo cáo:
+   - Người dùng có thể chọn bộ lọc thời gian (Ví dụ: 30 ngày gần nhất) để hệ thống tổng hợp dữ liệu báo cáo tương ứng.
+
+2. Chỉ số tổng quan (Overview Metrics):
+   - Tổng số lượt khám (Total Visits)
+   - Doanh thu tổng hợp / Doanh thu dự kiến
+   - Tỷ lệ hoàn thành lịch hẹn
+   - Điểm đánh giá sự hài lòng trung bình (Customer Satisfaction Rating)
+
+3. Phân tích chi tiết:
+   - Thống kê Lượt khám theo thời gian (Visits over time)
+   - Thống kê Dịch vụ nha khoa được sử dụng nhiều nhất (Top Services)
+   - Thống kê Lịch tái khám (Follow-ups)
+   - Bảng tổng hợp Phản hồi & Đánh giá của bệnh nhân (Feedbacks & Reviews)
+   - Nhấn nút "📊 Biểu đồ" để xem biểu đồ minh họa trực quan
+
+================================================================================
+7. NHẬT KÝ HỆ THỐNG - AUDIT LOGS (AuditLogManagement.jsx)
+================================================================================
+Mục đích: Theo dõi, giám sát toàn bộ các thao tác API, lịch sử đăng nhập và sự thay đổi dữ liệu của tất cả người dùng trong hệ thống để đảm bảo an ninh và minh bạch dữ liệu.
+
+A. CÁC TÍNH NĂNG VÀ THAO TÁC:
+1. Xem Bảng Nhật ký:
+   - Cột thông tin: ID, Thời gian (Định dạng ngày giờ Việt Nam), User (Họ tên, Email, ID, Vai trò), Hành động API (Method badge: GET - Xanh dương, POST - Xanh lá, PUT/PATCH - Vàng, DELETE - Đỏ), Entity, Chi tiết (Details), Thao tác.
+   - Điều hướng trang: Sử dụng nút "Trang trước" và "Trang sau" (Hiển thị 15 bản ghi/trang).
+
+2. Tìm kiếm và Lọc Nhật ký:
+   - Lọc theo Entity (Thực thể): Chọn trong danh sách (Tất cả Entity, Bệnh nhân, Bác sĩ, Lịch hẹn, Bệnh án, Hóa đơn, Xác thực, Trí tuệ nhân tạo AI).
+   - Tìm kiếm từ khóa: Nhập từ khóa hành động hoặc nội dung chi tiết và nhấn "Tìm kiếm".
+
+3. Xem Chi tiết JSON (Details Payload):
+   - Nhấn nút "Xem JSON" tại bản ghi cần kiểm tra.
+   - Hộp thoại Modal hiển thị toàn bộ thời gian, người thực hiện (User ID), hành động, entity và toàn bộ dữ liệu cấu trúc JSON chi tiết (Details Payload) được định dạng đẹp mắt.
+
+4. Xuất File Nhật ký (Export Logs):
+   - Nhấn nút "📥 Xuất File Log (Max 50k chars)".
+   - Hệ thống tự động tải về file định dạng `.json` chứa các bản ghi nhật ký với tên file dạng `audit_logs_YYYY-MM-DD.json`.
+
+================================================================================
+8. ĐỔI MẬT KHẨU & TIỆN ÍCH CHUNG (ChangePassword.jsx & ThemeToggle.jsx)
+================================================================================
+1. Đổi mật khẩu cá nhân (ChangePassword):
+   - Nằm tại Tab "Đổi mật khẩu" (Security).
+   - Cho phép Quản trị viên tự đổi mật khẩu tài khoản đang đăng nhập bằng cách nhập Mật khẩu hiện tại, Mật khẩu mới và Xác nhận mật khẩu mới.
+
+2. Tiện ích Giao diện (ThemeToggle):
+   - Đặt tại góc dưới thanh Sidebar.
+   - Cho phép chuyển đổi linh hoạt giữa Giao diện Sáng (Light Mode) và Giao diện Tối (Dark Mode) cho toàn bộ ứng dụng.
+================================================================================

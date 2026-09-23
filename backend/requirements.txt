@@ -1,0 +1,19 @@
+# Python Version Requirement: >=3.11, <3.13
+# Frontend Requirement: Node.js >=18.0.0 (chạy trong thư mục /frontend)
+
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+sqlalchemy==2.0.31
+alembic==1.13.2
+psycopg2-binary==2.9.9
+pydantic==2.8.2
+pydantic-settings==2.3.4
+python-jose[cryptography]==3.3.0
+bcrypt==4.0.1
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.9
+httpx==0.27.0
+pytest==8.2.2
+pytest-asyncio==0.23.7
+fastapi-mail
+google-genai

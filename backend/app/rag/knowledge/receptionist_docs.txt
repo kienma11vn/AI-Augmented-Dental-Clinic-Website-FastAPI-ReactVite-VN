@@ -1,0 +1,210 @@
+================================================================================
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG DENTAL CARE AI - PHÂN HỆ LỄ TÂN (RECEPTIONIST)
+================================================================================
+
+Tài liệu này cung cấp chi tiết toàn bộ các tính năng, giao diện và quy trình thao tác dành riêng cho người dùng có vai trò Lễ tân (Receptionist) trên hệ thống Dental Care AI. Dữ liệu tài liệu được trích xuất trực tiếp từ mã nguồn giao diện React (.jsx) của phân hệ Lễ tân.
+
+--------------------------------------------------------------------------------
+MỤC LỤC
+--------------------------------------------------------------------------------
+1. Tổng quan Giao diện & Điều hướng (ReceptionistDashboard.jsx)
+2. Quản lý Lịch hẹn & Tiếp nhận (AppointmentManagement.jsx)
+3. Quản lý Hồ sơ Bệnh nhân (PatientManagement.jsx)
+4. Lập Hóa đơn & Thanh toán (InvoiceManagement.jsx)
+5. Đổi Mật khẩu & Tiện ích chung (ChangePassword.jsx & ThemeToggle.jsx)
+
+================================================================================
+1. TỔNG QUAN GIAO DIỆN & ĐIỀU HƯỚNG (ReceptionistDashboard.jsx)
+================================================================================
+- Cấu trúc giao diện:
+  Giao diện Lễ tân bao gồm một Thanh điều hướng dọc (Sidebar) cố định phía bên trái (hoặc phía trên trên thiết bị di động) và Khu vực hiển thị nội dung chính phía bên phải.
+
+- Danh mục các Tab chức năng trên Sidebar:
+  1. 📅 Quản lý lịch hẹn & Tiếp nhận (Tab 'appointments')
+  2. 📋 Quản lý hồ sơ bệnh nhân (Tab 'patients')
+  3. 🧾 Lập hóa đơn & Thanh toán (Tab 'invoices')
+  4. 🔑 Đổi mật khẩu (Tab 'security')
+
+- Thông tin tài khoản & Bảng điều khiển góc dưới Sidebar:
+  + Hiển thị Tên người dùng đang đăng nhập (full_name) hoặc Email.
+  + Hiển thị nhãn Vai trò (ROLE) của tài khoản đang đăng nhập (Lễ tân / Receptionist).
+  + Nút Chuyển đổi Giao diện Tối/Sáng (ThemeToggle).
+  + Nút 🚪 Đăng xuất khỏi hệ thống.
+
+================================================================================
+2. QUẢN LÝ LỊCH HẸN & TIẾP NHẬN (AppointmentManagement.jsx)
+================================================================================
+Mục đích: Hỗ trợ Lễ tân thực hiện các thao tác đặt lịch khám mới, tiếp nhận check-in cho bệnh nhân đến khám, điều chỉnh/hủy lịch hẹn, sinh tin nhắn nhắc lịch tái khám bằng AI và tra cứu thông tin lượt khám.
+
+A. BẢNG TABS VÀ QUẢN LÝ DANH SÁCH LỊCH HẸN:
+1. Phân loại danh sách theo Tabs:
+   - Tab "Khám hôm nay": Hiển thị các lịch hẹn Đã xác nhận (confirmed) nằm trong ngày hiện tại.
+   - Tab "Đã khám": Hiển thị danh sách lịch hẹn Đã check-in (checkin) hoặc Đã hoàn thành (completed). Hỗ trợ bộ lọc thời gian: Hôm nay, 7 ngày qua, 30 ngày qua, 90 ngày qua.
+   - Tab "Sắp tới": Hiển thị lịch hẹn Đã xác nhận (confirmed) ở các ngày trong tương lai. Hỗ trợ bộ lọc thời gian: 7 ngày tới, 30 ngày tới, 90 ngày tới.
+   - Tab "Chờ xác nhận": Hiển thị các lịch hẹn mới được tạo ở trạng thái Chờ xác nhận (scheduled).
+   - Tab "Hủy": Hiển thị các lịch hẹn đã bị Hủy (cancelled). Hỗ trợ bộ lọc thời gian: Hôm nay, 7 ngày qua, 30 ngày qua, 90 ngày qua.
+
+2. Phân trang:
+   - Mỗi trang hiển thị tối đa 10 bản ghi lịch hẹn. Khi chuyển Tab hoặc thay đổi tùy chọn bộ lọc thời gian, hệ thống tự động quay về Trang 1.
+
+B. QUY TẮC NGHIỆP VỤ & TỰ ĐỘNG HÓA HỆ THỐNG:
+1. Kiểm tra trùng lịch hẹn Client-side (checkConflictClientSide):
+   - Hệ thống tự động kiểm tra thời gian giao nhau giữa lịch hẹn mới/sửa với các lịch hiện có trong CSDL.
+   - Trùng lịch xảy ra nếu cùng một Bác sĩ HOẶC cùng một Ghế khám bị trùng khoảng thời gian (Start_Mới < End_Cũ AND End_Mới > Start_Cũ). Các lịch hẹn đã bị Hủy sẽ không tính vào trùng lịch.
+
+2. Quy tắc thời gian và khung giờ khám:
+   - Khung giờ làm việc hành chính: Từ 08:00 đến 17:00.
+   - Các khung giờ cố định chọn sẵn (TIME_SLOTS): 08:00, 08:30, 09:00, 09:30, 10:00, 10:30, 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00.
+   - Thời lượng mặc định mỗi ca khám: 60 phút (1 tiếng). Khi Lễ tân chọn giờ bắt đầu, hệ thống tự động tính giờ kết thúc.
+   - Giới hạn thời gian đặt/sửa lịch: Phải thực hiện trước thời gian bắt đầu khám ít nhất 8 tiếng. Không cho phép đặt lịch cho thời gian trong quá khứ.
+
+3. Điều kiện Check-in cho bệnh nhân:
+   - Lễ tân chỉ có thể nhấn nút "Check-in" khi thời điểm hiện tại nằm trong khoảng trước giờ khám tối đa 10 phút hoặc sau giờ khám không quá 45 phút (từ -45 phút đến +10 phút so với start_time). Nếu chưa đến hoặc quá thời gian này, nút Check-in bị mờ/khóa.
+
+4. Nhận diện trạng thái Ghế khám tạm dừng:
+   - Ghế khám bị coi là Tạm dừng nếu is_active === false hoặc thuộc trạng thái paused, tạm dừng, inactive, maintenance, bảo trì. Các ghế này sẽ bị vô hiệu hóa (disabled) không cho chọn trong Modal đặt lịch.
+
+5. Tự động chuyển trạng thái lịch khám quá hạn:
+   - Lịch "Chờ xác nhận" (scheduled) quá giờ bắt đầu -> Tự động chuyển sang "Đã hủy" (cancelled).
+   - Lịch "Đã xác nhận" (confirmed) quá giờ bắt đầu trên 45 phút -> Tự động chuyển sang "Đã hủy" (cancelled).
+   - Lịch "Đã check-in" (checkin) quá 60 phút -> Tự động chuyển sang "Đã hoàn thành" (completed) và tự động tạo Hồ sơ bệnh lý ban đầu.
+
+C. CÁC THAO TÁC CƠ BẢN:
+1. Đặt lịch khám mới:
+   - Nhấn nút "➕ Đặt lịch khám mới".
+   - Trong Modal, sử dụng ô Autocomplete để tìm kiếm và chọn Bệnh nhân (*), Bác sĩ phụ trách (*), Dịch vụ khám (*).
+   - Chọn Ghế khám (*), Ngày khám (*), Khung giờ bắt đầu (*).
+   - Tiện ích AI: Nhấn nút "🤖 Giải thích dịch vụ bằng AI" để Gemini AI phân tích và đưa ra giải thích chi tiết về gói dịch vụ đã chọn.
+   - Nhập Ghi chú bổ sung (nếu có) và nhấn "Xác nhận đặt lịch". Lịch tạo thành công sẽ ở trạng thái Đã xác nhận (confirmed).
+
+2. Tra cứu & Tìm kiếm lịch khám:
+   - Nhấn nút "🔍 Tìm kiếm lịch khám".
+   - Lọc theo: Trạng thái lịch, Bệnh nhân, Bác sĩ, Ngày khám. Nhấn "Tìm kiếm" để xem bảng kết quả.
+   - Lịch hẹn đã xác nhận trong ngày hôm nay sẽ bị vô hiệu hóa nút "Sửa" để đảm bảo ổn định ca khám.
+
+3. Tiếp nhận Check-in & Cập nhật trạng thái:
+   - Khi bệnh nhân đến phòng khám đúng giờ, Lễ tân nhấn nút "Check-in". Hệ thống sẽ chuyển trạng thái lịch sang Check-in và tự động gửi thông báo tới bệnh nhân.
+
+4. Hủy lịch khám:
+   - Nhấn nút "Hủy" tại lịch hẹn.
+   - Nhập Lý do lễ tân hủy lịch (*) trong Modal xác nhận và nhấn "Xác nhận Hủy". Hệ thống sẽ bổ sung ghi chú [Lễ tân hủy] <Lý do> và gửi thông báo hủy cho bệnh nhân.
+
+5. Chỉnh sửa thông tin lịch khám:
+   - Nhấn nút "Sửa" tại lịch hẹn (áp dụng cho lịch Chờ xác nhận hoặc Sắp tới).
+   - Cập nhật Bác sĩ, Ghế khám, Ngày khám, Giờ khám hoặc Ghi chú. Hệ thống sẽ kiểm tra trùng lịch và quy tắc 8 tiếng trước khi lưu.
+
+6. Đặt lại lịch khám (Rebook):
+   - Nhấn nút "Đặt lại" đối với lịch hẹn đã bị Hủy. Hệ thống mở Modal Đặt lịch mới và điền sẵn thông tin Bệnh nhân, Bác sĩ cũ.
+
+7. Xem chi tiết lịch khám & Phân tích dịch vụ AI:
+   - Nhấn biểu tượng "ⓘ" (Xem chi tiết).
+   - Màn hình hiển thị đầy đủ thông tin Bệnh nhân, Bác sĩ, Ghế khám, Thời gian, Dịch vụ, Ghi chú, Lý do hủy và Phản hồi/Đánh giá của bệnh nhân (nếu lượt khám đã hoàn thành).
+   - Nhấn nút "🤖 Giải thích dịch vụ bằng AI" để nhận phân tích tư vấn từ AI.
+
+D. TÍNH NĂNG TRỢ LÝ AI SINH TIN NHẮN NHẮC LỊCH TÁI KHÁM:
+- Nhấn nút "🤖 Sinh tin nhắn nhắc lịch khám bằng AI" trên banner chính hoặc trong Modal chi tiết lịch hẹn.
+- Trong Modal AI:
+  * Chọn Lịch tái khám cần gửi thông báo (hiển thị danh sách lịch Confirmed/Scheduled).
+  * Xem các thông tin Read-only (Bệnh nhân, Bác sĩ, Dịch vụ, Ngày giờ).
+  * Nhấn nút "✨ Sinh nội dung tin nhắn bằng AI". Gemini AI sẽ tự động soạn tin nhắn nhắc lịch tái khám cá nhân hóa.
+  * Lễ tân có thể chỉnh sửa lại văn bản trực tiếp trong ô Textarea.
+  * Nhấn nút "✉️ Gửi tin nhắn". Hệ thống lưu thông báo vào CSDL và đồng bộ tới tài khoản Bệnh nhân.
+
+E. HỆ THỐNG THÔNG BÁO THAY ĐỔI LỊCH KHÁM:
+- Nhấn biểu tượng Quả chuông 🔔 góc trên bên phải bảng lịch hẹn.
+- Tự động hiển thị và cảnh báo khi có biến động:
+  * Thay đổi Bệnh nhân, Bác sĩ phụ trách, Ghế khám hoặc Thời gian khám.
+  * Thay đổi Trạng thái lịch khám hoặc Lễ tân/Bác sĩ/Bệnh nhân hủy lịch.
+- Thông báo đã đọc chỉ hiển thị trong vòng 14 ngày, sau 14 ngày tự động ẩn khỏi danh sách.
+
+================================================================================
+3. QUẢN LÝ HỒ SƠ BỆNH NHÂN (PatientManagement.jsx)
+================================================================================
+Mục đích: Quản lý danh sách hồ sơ bệnh nhân, tạo tài khoản người bệnh mới, tra cứu tiền sử bệnh lý và xem chi tiết hồ sơ điều trị.
+
+A. CÁC TÍNH NĂNG VÀ THAO TÁC CƠ BẢN:
+1. Xem danh sách Bệnh nhân:
+   - Các cột hiển thị: User ID (#id), Tên bệnh nhân, Tuổi (tự động tính từ ngày sinh), SĐT, Trạng thái TK (Hoạt động / Đã khóa), Thao tác.
+   - Phân trang: 10 bệnh nhân trên một trang.
+
+2. Tìm kiếm và Lọc bệnh nhân:
+   - Bộ lọc Tìm kiếm (Dropdown): Chọn "Tất cả trường thông tin", "Tên bệnh nhân", "Số điện thoại", "Tuổi", "User ID", "CCCD / CMND", "Địa chỉ".
+   - Ô nhập từ khóa: Tìm kiếm chính xác theo trường đã chọn. Hệ thống tự động chuyển về Trang 1 khi thay đổi từ khóa.
+
+3. Thêm Bệnh nhân mới:
+   - Nhấn nút "➕ Thêm bệnh nhân mới".
+   - Nhập các trường thông tin:
+     * Họ và tên (*)
+     * Số điện thoại (*)
+     * Ngày sinh, Giới tính (Nam / Nữ / Khác), Số CCCD/CMND, Địa chỉ liên hệ.
+     * Tiền sử bệnh lý (dị ứng, tim mạch, tiểu đường...).
+     * Tài khoản đăng nhập (Tùy chọn): Email đăng nhập và Mật khẩu ban đầu (tối thiểu 6 ký tự).
+   - Nhấn "Lưu bệnh nhân" để tạo hồ sơ bệnh nhân và tài khoản User tương ứng.
+
+4. Xem Chi tiết & Tài khoản Bệnh nhân:
+   - Nhấn nút "👁️ Chi tiết".
+   - Màn hình hiển thị toàn bộ thông tin cá nhân, tuổi, CCCD, địa chỉ, tiền sử bệnh lý và thông tin tài khoản hệ thống (Email, Mật khẩu mã hóa kèm nút "Hiện" mật khẩu).
+
+5. Sửa Thông tin Bệnh nhân:
+   - Nhấn nút "✏️ Sửa thông tin".
+   - Cập nhật Họ tên, SĐT, Ngày sinh, Giới tính, CCCD, Địa chỉ, Tiền sử bệnh lý.
+   - Ô Mật khẩu mới: Nếu không đổi mật khẩu tài khoản bệnh nhân thì để trống. Tích chọn "Hiện mật khẩu" để kiểm tra ký tự đã nhập.
+   - Nhấn "Cập nhật thay đổi".
+
+6. Khóa / Mở khóa Tài khoản Bệnh nhân:
+   - Nhấn nút "🔒 Khóa TK" hoặc "🔓 Mở TK".
+   - Nếu bệnh nhân chưa có tài khoản User, nút này sẽ bị vô hiệu hóa.
+   - Hệ thống hiển thị hộp thoại xác nhận trước khi thực hiện khóa/mở khóa.
+
+7. Xem Hồ sơ Bệnh lý gần nhất:
+   - Nhấn nút "🩺 Hồ sơ bệnh lý".
+   - Hệ thống truy xuất và hiển thị hồ sơ điều trị mới nhất của bệnh nhân: Mã hồ sơ, Mã lịch hẹn, Ngày khám, Mô tả chẩn đoán, Ghi chú điều trị, Tóm tắt AI (ai_summary) và Ngày hẹn tái khám dự kiến.
+
+================================================================================
+4. LẬP HÓA ĐƠN & THANH TOÁN (InvoiceManagement.jsx)
+================================================================================
+Mục đích: Lập hóa đơn thu tiền cho các hồ sơ bệnh lý đã hoàn thành, áp dụng các chương trình chiết khấu/khuyến mãi và ghi nhận thu tiền từ bệnh nhân.
+
+A. BẢNG TABS VÀ QUẢN LÝ HÓA ĐƠN:
+1. Phân loại danh sách:
+   - Tab "Hôm nay": Hiển thị tất cả hóa đơn được lập trong ngày hiện tại.
+   - Tab "Đã thanh toán": Hiển thị hóa đơn có trạng thái Đã thanh toán (paid). Hỗ trợ bộ lọc thời gian: 7 ngày qua, 30 ngày qua, 90 ngày qua.
+   - Tab "Chưa thanh toán": Hiển thị hóa đơn Chưa thanh toán (unpaid) hoặc Thanh toán 1 phần (partial). Hỗ trợ bộ lọc thời gian: 7 ngày qua, 30 ngày qua, 90 ngày qua.
+   - Phân trang: Hiển thị 10 hóa đơn/trang.
+
+2. Thông tin cột hiển thị:
+   - Mã HĐ (#id), Bệnh nhân / Hồ sơ, Tổng tiền, Chiết khấu, Thực thu / Đã trả, Trạng thái (Đã thanh toán / Thanh toán 1 phần / Chưa thanh toán), Thao tác.
+
+B. CÁC THAO TÁC QUẢN LÝ HÓA ĐƠN:
+1. Lập Hóa đơn mới từ Hồ sơ bệnh lý:
+   - Tại khung "🧾 Lập hóa đơn mới từ Hồ sơ bệnh lý":
+   - Sử dụng ô Autocomplete RecordAutocompleteInput để chọn Mã hồ sơ bệnh lý chưa xuất hóa đơn (hiển thị Mã HS, Tên bệnh nhân, Ngày tạo, Chẩn đoán).
+   - Nhập Ghi chú bổ sung (nếu có).
+   - Nhấn nút "➕ Tạo hóa đơn". Hệ thống sẽ tự động bóc tách các dịch vụ trong hồ sơ để tính Tổng tiền.
+
+2. Xem Chi tiết Hóa đơn:
+   - Nhấn biểu tượng "ⓘ" (Chi tiết).
+   - Màn hình hiển thị Tên khách hàng/bệnh nhân, Mã hồ sơ, Mã chương trình giảm giá, Bảng danh sách chi tiết các dịch vụ sử dụng (Dịch vụ, Số lượng, Đơn giá, Thành tiền), Tổng tiền nguyên giá, Chiết khấu giảm giá và Tổng thanh toán.
+
+3. Thu tiền & Áp dụng Chiết khấu Khuyến mãi:
+   - Nhấn nút "Thanh toán" tại hóa đơn chưa trả đủ tiền.
+   - Trong Modal Thanh toán:
+     * Chọn Chương trình Chiết khấu / Khuyến mãi từ danh sách Droplist discountPrograms (Ví dụ: Giảm theo %, Giảm số tiền cố định).
+     * Hoặc tự nhập Tỷ lệ giảm (%) / Số tiền giảm trực tiếp (đ) thủ công nếu chọn "Không áp dụng chiết khấu".
+     * Nhập Lý do chiết khấu (nếu có).
+     * Bảng tính toán tài chính tự động cập nhật: Tổng nguyên giá ➔ Chiết khấu ➔ Tổng tiền sau chiết khấu ➔ Đã thanh toán trước đó ➔ Còn nợ chưa thu.
+     * Nhập Số tiền thu đợt này (VNĐ) (*) (Tối thiểu 1đ, tối đa bằng số tiền còn nợ).
+     * Chọn Hình thức thanh toán (*): Tiền mặt, Chuyển khoản / QR Code, Thẻ ATM / Thẻ tín dụng.
+     * Nhấn "Xác nhận thanh toán". Trạng thái hóa đơn sẽ tự động chuyển sang "Đã thanh toán" (nếu trả đủ) hoặc "Thanh toán 1 phần".
+
+================================================================================
+5. ĐỔI MẬT KHẨU & TIỆN ÍCH CHUNG (ChangePassword.jsx & ThemeToggle.jsx)
+================================================================================
+1. Đổi mật khẩu cá nhân (ChangePassword):
+   - Nằm tại Tab "Đổi mật khẩu" (Security).
+   - Cho phép Lễ tân tự đổi mật khẩu tài khoản đang đăng nhập bằng cách nhập Mật khẩu hiện tại, Mật khẩu mới (tối thiểu 6 ký tự, không trùng mật khẩu cũ) và Xác nhận mật khẩu mới.
+
+2. Tiện ích Giao diện (ThemeToggle):
+   - Đặt tại góc dưới thanh Sidebar.
+   - Cho phép chuyển đổi linh hoạt giữa Giao diện Sáng (Light Mode) và Giao diện Tối (Dark Mode) cho toàn bộ ứng dụng.
+================================================================================

@@ -1,0 +1,175 @@
+================================================================================
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG VÀ BỘ TRI THỨC HỆ THỐNG DENTAL CARE AI
+================================================================================
+Các chức năng chung cơ bản
+
+MỤC LỤC:
+1. TỔNG QUAN HỆ THỐNG & THÔNG TIN LIÊN HỆ
+2. DANH SÁCH VAI TRÒ VÀ PHÂN QUYỀN NGƯỜI DÙNG
+3. DANH MỤC DỊCH VỤ NHA KHOA VÀ GIÁ CẢ
+4. CÁC TÍNH NĂNG TRÍ TUỆ NHÂN TẠO (AI) NỔI BẬT
+5. HƯỚNG DẪN CHI TIẾT CÁC THAO TÁC TÀI KHOẢN & BẢO MẬT
+   5.1. Đăng ký tài khoản bệnh nhân mới
+   5.2. Đăng nhập hệ thống
+   5.3. Quên mật khẩu & Khôi phục mật khẩu qua Email
+   5.4. Đổi mật khẩu cá nhân (Trong Trang làm việc)
+6. HƯỚNG DẪN ĐIỀU HƯỚNG, CHUYỂN GIAO DIỆN VÀ XỬ LÝ LỖI
+   6.1. Chuyển đổi giao diện Sáng/Tối (Dark/Light Mode)
+   6.2. Xử lý lỗi Truy cập bị từ chối (Lỗi 403 Restricted Access)
+   6.3. Xử lý lỗi giao diện hệ thống (Error Boundary)
+7. CÂU HỎI THƯỜNG GẶP (FAQ) DÀNH CHO CHATBOT HỎI ĐÁP
+
+================================================================================
+1. TỔNG QUAN HỆ THỐNG & THÔNG TIN LIÊN HỆ
+================================================================================
+- Tên hệ thống: Dental Care AI Management System (Hệ thống Nha khoa Thông minh).
+- Mục tiêu: Giải pháp quản lý phòng khám và chăm sóc sức khỏe răng miệng hiện đại, ứng dụng Trí tuệ Nhân tạo Gemini AI để tối ưu hóa quy trình điều trị, nhắc lịch và tóm tắt bệnh án.
+- Địa chỉ phòng khám: 123 P. Phan Đình Phùng, T. Thái Nguyên.
+- Hotline hỗ trợ: 0901 234 567
+- Email hỗ trợ: support@nhakhoa.vn
+- Giờ làm việc:
+  + Thứ 2 đến Thứ 7: 08:00 - 17:00
+  + Chủ nhật: 08:00 - 12:00
+
+================================================================================
+2. DANH SÁCH VAI TRÒ VÀ PHÂN QUYỀN NGƯỜI DÙNG
+================================================================================
+Hệ thống phân quyền chi tiết thành 5 vai trò (Role):
+1. Quản trị viên (Admin):
+   - Quyền hạn: Quản lý toàn bộ hệ thống, phân quyền, khởi tạo tài khoản nhân sự và bệnh nhân.
+2. Bác sĩ (Doctor):
+   - Quyền hạn: Xem lịch hẹn khám, ghi nhận chẩn đoán, xem và quản lý hồ sơ điều trị bệnh nhân, sử dụng công cụ AI tóm tắt bệnh án.
+3. Lễ tân (Receptionist):
+   - Quyền hạn: Tiếp đón bệnh nhân, đặt lịch hẹn, quản lý danh sách khám và ghế khám, gửi tin nhắn nhắc lịch tái khám AI.
+4. Kế toán (Accountant):
+   - Quyền hạn: Quản lý hóa đơn, thanh toán, duyệt hóa đơn điện tử và báo cáo tài chính phòng khám.
+5. Bệnh nhân (Patient):
+   - Quyền hạn: Đăng ký tài khoản công khai, đăng nhập, đặt lịch khám, xem lịch sử điều trị và đổi mật khẩu cá nhân.
+
+================================================================================
+3. DANH MỤC DỊCH VỤ NHA KHOA VÀ GIÁ CẢ
+================================================================================
+Phòng khám cung cấp các dịch vụ nha khoa tiêu chuẩn với bảng giá niêm yết:
+1. Mã dịch vụ: KHAM01
+   - Tên dịch vụ: Khám & Tư vấn Tổng quát
+   - Đơn giá: 100.000 VNĐ
+   - Mô tả: Thăm khám, kiểm tra tình trạng răng miệng tổng quát.
+2. Mã dịch vụ: CAO01
+   - Tên dịch vụ: Lấy cao răng
+   - Đơn giá: 300.000 VNĐ
+   - Mô tả: Làm sạch vôi răng, đánh bóng bề mặt răng nhẹ nhàng.
+3. Mã dịch vụ: TRAM01
+   - Tên dịch vụ: Trám răng Composite
+   - Đơn giá: 500.000 VNĐ
+   - Mô tả: Phục hồi răng sâu hoặc sứt bằng vật liệu cao cấp.
+4. Mã dịch vụ: TUY01
+   - Tên dịch vụ: Điều trị Tủy răng
+   - Đơn giá: 1.500.000 VNĐ
+   - Mô tả: Làm sạch và trám bít hệ thống ống tủy chuẩn y khoa.
+5. Mã dịch vụ: TRANG01
+   - Tên dịch vụ: Tẩy trắng răng
+   - Đơn giá: 2.000.000 VNĐ
+   - Mô tả: Tẩy trắng răng công nghệ đèn Plasma an toàn.
+6. Mã dịch vụ: SU01
+   - Tên dịch vụ: Bọc răng sứ
+   - Đơn giá: 3.500.000 VNĐ
+   - Mô tả: Phục hình răng sứ thẩm mỹ tự nhiên, độ bền cao.
+
+================================================================================
+4. CÁC TÍNH NĂNG TRÍ TUỆ NHÂN TẠO (AI) NỔI BẬT
+================================================================================
+Hệ thống tích hợp Gemini AI với 3 tính năng cốt lõi:
+1. Sinh & Nhận tin nhắn nhắc lịch tái khám AI:
+   - Tính năng: Tự động khởi tạo và gửi tin nhắn nhắc lịch tái khám cá nhân hóa cho từng bệnh nhân, đảm bảo đúng tiến trình điều trị.
+2. Giải thích dịch vụ nha khoa AI:
+   - Tính năng: Môt tả chi tiết, ngắn gọn, dễ hiểu về các gói dịch vụ, quy trình kỹ thuật điều trị cũng như chi phí cho bệnh nhân tham khảo.
+3. Tóm tắt hồ sơ điều trị AI:
+   - Tính năng: Tự động tổng hợp quá trình chẩn đoán, tiền sử bệnh lý và kết quả điều trị giúp Bác sĩ nắm bắt nhanh và Bệnh nhân dễ dàng theo dõi.
+
+================================================================================
+5. HƯỚNG DẪN CHI TIẾT CÁC THAO TÁC TÀI KHOẢN & BẢO MẬT
+================================================================================
+
+5.1. ĐĂNG KÝ TÀI KHOẢN BỆNH NHÂN MỚI (RegisterPage)
+- Đối tượng: Khách hàng / Bệnh nhân mới chưa có tài khoản.
+- Các bước thực hiện:
+  1. Truy cập Trang chủ và nhấn nút "Đặt lịch khám" hoặc "Đăng ký Khám bệnh" (hoặc truy cập trực tiếp `/register`).
+  2. Điền đầy đủ các thông tin bắt buộc (có dấu sao đỏ *):
+     - Họ và tên (ví dụ: Nguyễn Văn A)
+     - Số CCCD / CMND (ví dụ: 001099001234)
+     - Địa chỉ Email (ví dụ: patient@nhakhoa.vn)
+     - Số điện thoại (ví dụ: 0912345678)
+     - Mật khẩu (Tối thiểu 6 ký tự)
+     - Xác nhận Mật khẩu (Phải trùng khớp với Mật khẩu đã nhập)
+  3. Quý khách có thể tích chọn "Hiện mật khẩu" để kiểm tra lại ký tự đã nhập.
+  4. Nhấn nút "Đăng ký tài khoản".
+  5. Sau khi đăng ký thành công, hệ thống hiển thị thông báo màu xanh và tự động chuyển hướng đến trang Đăng nhập sau 2 giây.
+
+5.2. ĐĂNG NHẬP HỆ THỐNG (LoginPage)
+- Đối tượng: Tất cả người dùng (Admin, Bác sĩ, Lễ tân, Kế toán, Bệnh nhân).
+- Các bước thực hiện:
+  1. Truy cập trang Đăng nhập (`/login`).
+  2. Nhập "Địa chỉ Email" và "Mật khẩu".
+  3. Tùy chọn: Tích ô "Hiện mật khẩu" nếu muốn kiểm tra lại.
+  4. Nhấn nút "Đăng nhập".
+  5. Hệ thống xác thực token và tự động chuyển hướng người dùng về Trang làm việc (Dashboard) tương ứng với vai trò của tài khoản đó.
+
+5.3. QUÊN MẬT KHẨU & KHÔI PHỤC MẬT KHẨU QUA EMAIL (ForgotPasswordPage & ResetPasswordPage)
+- Yêu cầu quên mật khẩu:
+  1. Tại trang Đăng nhập, nhấn vào liên kết "Quên mật khẩu?".
+  2. Nhập "Địa chỉ Email" đã đăng ký tài khoản.
+  3. Nhấn "Gửi yêu cầu khôi phục".
+  4. Hệ thống sẽ gửi một đường dẫn kèm Mã khôi phục (Token) về Email của người dùng.
+- Đặt lại mật khẩu mới:
+  1. Nhấp vào đường dẫn khôi phục trong Email (chứa tham số token).
+  2. Màn hình "Đặt lại mật khẩu" hiển thị.
+  3. Nhập "Mật khẩu mới" (tối thiểu 6 ký tự) và "Xác nhận Mật khẩu mới".
+  4. Nhấn nút "Cập nhật mật khẩu".
+  5. Khi thành công, hệ thống sẽ tự động chuyển hướng về trang Đăng nhập sau 2.5 giây.
+
+5.4. ĐỔI MẬT KHẨU CÁ NHÂN TRONG TRANG QUẢN LÝ (ChangePassword)
+- Yêu cầu: Người dùng đã đăng nhập vào hệ thống.
+- Các bước thực hiện:
+  1. Vào phần Cài đặt tài khoản cá nhân.
+  2. Nhập "Mật khẩu hiện tại".
+  3. Nhập "Mật khẩu mới" (Yêu cầu: từ 6 ký tự trở lên, KHÔNG được trùng với Mật khẩu hiện tại).
+  4. Nhập "Xác nhận mật khẩu mới" (Phải trùng khớp với Mật khẩu mới).
+  5. Nhấn "Cập nhật mật khẩu".
+  6. Hệ thống hiển thị thông báo cập nhật thành công và xóa trắng các ô nhập liệu.
+
+================================================================================
+6. HƯỚNG DẪN ĐIỀU HƯỚNG, CHUYỂN GIAO DIỆN VÀ XỬ LÝ LỖI
+================================================================================
+
+6.1. CHUYỂN ĐỔI GIAO DIỆN SÁNG / TỐI (ThemeToggle)
+- Vị trí: Biểu tượng nút ở góc trên bên phải màn hình hoặc thanh Menu điều hướng.
+- Cách dùng: Nhấn nút biểu tượng Mặt trời ☀️ (để đổi sang Giao diện Sáng) hoặc Mặt trăng 🌙 (để đổi sang Giao diện Tối/Dark Mode).
+
+6.2. XỬ LÝ LỖI TRUY CẬP BỊ TỪ CHỐI - 403 RESTRICTED ACCESS (UnauthorizedPage)
+- Nguyên nhân: Người dùng truy cập vào đường dẫn hoặc chức năng không thuộc phạm vi phân quyền của tài khoản (ví dụ: Bệnh nhân cố gắng truy cập trang Quản trị Admin).
+- Màn hình hiển thị: Thông báo mã lỗi 403, kèm thông tin tên người dùng và vai trò hiện tại.
+- Hướng xử lý cho người dùng:
+  + Cánh 1: Nhấn "Trở về Trang làm việc chính" để quay lại đúng Dashboard được phân quyền của mình.
+  + Cách 2: Nhấn "Đăng nhập tài khoản khác" để thoát tài khoản hiện tại và đăng nhập bằng tài khoản có thẩm quyền thích hợp.
+
+6.3. XỬ LÝ LỖI HIỂN THỊ GIAO DIỆN (ErrorBoundary)
+- Nguyên nhân: Xảy ra lỗi bất ngờ trong quá trình tải dữ liệu hoặc xử lý giao diện React.
+- Hướng xử lý: Khi màn hình hiển thị khung thông báo lỗi màu đỏ "Đã xảy ra lỗi khi tải giao diện", người dùng nhấn vào nút "Tải lại trang" để hệ thống làm mới lại phiên làm việc.
+
+================================================================================
+7. CÂU HỎI THƯỜNG GẶP (FAQ) DÀNH CHO CHATBOT HỎI ĐÁP
+================================================================================
+Q1: Làm sao để đăng ký tài khoản khám bệnh?
+A1: Quý khách nhấn nút "Đặt lịch khám" trên trang chủ hoặc truy cập trang Đăng ký (`/register`), điền đầy đủ Họ tên, CCCD, Email, SĐT và Mật khẩu (tối thiểu 6 ký tự), sau đó nhấn "Đăng ký tài khoản".
+
+Q2: Chi phí tẩy trắng răng tại phòng khám là bao nhiêu?
+A2: Dịch vụ Tẩy trắng răng (Mã dịch vụ: TRANG01) áp dụng công nghệ đèn Plasma an toàn có giá niêm yết là 2.000.000 VNĐ.
+
+Q3: Tôi bị quên mật khẩu thì phải làm thế nào?
+A3: Quý khách vào trang Đăng nhập, chọn "Quên mật khẩu?", nhập Email đã đăng ký và nhấn "Gửi yêu cầu khôi phục". Sau đó kiểm tra Email để lấy liên kết tạo mật khẩu mới.
+
+Q4: Tôi không thể truy cập vào trang Quản lý Bác sĩ?
+A4: Màn hình sẽ báo lỗi 403 Truy cập bị từ chối do tài khoản của bạn không phải vai trò Bác sĩ hoặc Admin. Bạn vui lòng nhấn "Trở về Trang làm việc chính" hoặc chuyển sang tài khoản đúng thẩm quyền.
+
+Q5: Mật khẩu mới có yêu cầu gì không?
+A5: Mật khẩu mới bắt buộc phải có ít nhất 6 ký tự, nhập lại xác nhận chính xác và không trùng với mật khẩu hiện tại (khi thực hiện đổi mật khẩu).
