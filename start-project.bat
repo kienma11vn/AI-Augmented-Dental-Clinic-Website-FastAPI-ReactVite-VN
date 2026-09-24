@@ -11,10 +11,10 @@ echo.
 
 :: 1. Khoi chay Backend trong cua so rieng
 echo [1/2] Dang khoi chay Backend (Docker)...
-if exist "backend\run_docker.bat" (
-    start "Backend Server" cmd /k "cd /d "%~dp0backend" && run_docker.bat"
+if exist "backend\run-docker.bat" (
+    start "Backend Server" cmd /k "cd /d "%~dp0backend" && run-docker.bat"
 ) else (
-    echo [LOI] Khong tim thay file backend\run_docker.bat!
+    echo [LOI] Khong tim thay file backend\run-docker.bat!
     pause
     exit /b 1
 )

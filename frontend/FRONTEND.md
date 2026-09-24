@@ -56,12 +56,12 @@ frontend/
 
 ## 🚀 Hướng dẫn Cài đặt & Khởi chạy
 
-### Cách 1: Khởi chạy nhanh bằng Script Batch (`start_frontend.bat`) — Dành cho Windows
+### Cách 1: Khởi chạy nhanh bằng Script Batch (`start-frontend.bat`) — Dành cho Windows
 
 Dự án đã tích hợp sẵn file tự động kiểm tra dependencies và khởi chạy server.
 
 1. Truy cập vào thư mục gốc của Frontend.
-2. Nhấp đúp vào file **`start_frontend.bat`**.
+2. Nhấp đúp vào file **`start-frontend.bat`**.
 3. File `.bat` sẽ tự động thực hiện:
    - Kiểm tra thư mục `node_modules`. Nếu chưa có, script sẽ tự động chạy `npm install`.
    - Khởi chạy ứng dụng ở chế độ phát triển (`npm run dev` hoặc `npm start`).

@@ -21,6 +21,8 @@ Hướng dẫn tự host toàn bộ hệ thống: **PostgreSQL (Neon/Supabase)**
                                        └──────────────────┘
 ```
 
+  <img width="973" height="114" alt="ArchitectureDiagram drawio" src="https://github.com/user-attachments/assets/2a2ec20b-24db-4b0f-85db-199e200a0416" />
+
 - **Frontend**: React + Vite + Tailwind CSS + React Query, deploy trên **Vercel**.
 - **Backend**: Python FastAPI + SQLAlchemy + Alembic, chạy trong **Docker** trên VPS/Render/Railway hoặc local server.
 - **Database**: **PostgreSQL** trên Neon hoặc Supabase (bắt buộc hỗ trợ `tstzrange` và `EXCLUDE` constraint).

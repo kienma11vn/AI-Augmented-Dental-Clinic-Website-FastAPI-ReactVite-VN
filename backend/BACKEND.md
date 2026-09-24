@@ -30,8 +30,8 @@ backend/
   requirements.txt
   Dockerfile
   docker-compose.yml
-  run_venv.bat          # Script khởi chạy nhanh Backend Python / venv
-  run_docker.bat        # Script khởi chạy nhanh Docker Compose (Tự động kiểm tra build)  
+  run-venv.bat          # Script khởi chạy nhanh Backend Python / venv
+  run-docker.bat        # Script khởi chạy nhanh Docker Compose (Tự động kiểm tra build)  
 ```
 
 ---
@@ -50,9 +50,9 @@ backend/
 - Đã cài đặt **Python** (3.11 hoặc 3.12) và **PostgreSQL** (14+).
 - Đảm bảo file `.env` trong thư mục `backend/` đã được cấu hình các biến môi trường cần thiết.
 
-### Cách 1: Khởi chạy nhanh bằng Script Batch (`run_venv.bat`) — Dành cho Windows
+### Cách 1: Khởi chạy nhanh bằng Script Batch (`run-venv.bat`) — Dành cho Windows
 
-Chỉ cần nhấp đúp chuột vào file `run_venv.bat` tại thư mục `backend/`. Script sẽ tự động:
+Chỉ cần nhấp đúp chuột vào file `run-venv.bat` tại thư mục `backend/`. Script sẽ tự động:
 
 - Kích hoạt môi trường ảo Python.
 
@@ -98,9 +98,9 @@ uvicorn app.main:app --reload --port 8000
 - Khởi dộng **Docker Desktop**.
 - Đảm bảo file `.env` trong thư mục `backend/` đã được cấu hình các biến môi trường cần thiết.
 
-### Cách 1: Khởi chạy thông minh bằng Script Batch (`run_docker.bat`)
+### Cách 1: Khởi chạy thông minh bằng Script Batch (`run-docker.bat`)
 
-Click đúp chuột vào file `run_docker.bat`. Script sẽ tự động:
+Click đúp chuột vào file `run-docker.bat`. Script sẽ tự động:
 
 - Tính toán mã **Hash SHA256** của các file mã nguồn (bỏ qua các thư mục tạm `__pycache__` và file `.pyc`).
 

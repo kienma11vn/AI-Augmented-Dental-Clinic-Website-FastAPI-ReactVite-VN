@@ -19,9 +19,9 @@ Tổng hợp cơ bản toàn bộ các bước cài đặt, cấu hình môi tr�
 
 ---
 
-## 2. Khởi chạy Project nhanh bằng Script Batch (`start_project.bat`) với Docker — Dành cho Windows
+## 2. Khởi chạy Project nhanh bằng Script Batch (`start-project.bat`) với Docker — Dành cho Windows
 
-Hệ thống đã tích hợp sẵn script **`start_project.bat`** ở thư mục gốc của dự án, giúp bạn tự động hóa việc khởi chạy đồng thời cả **Backend** (*chạy trên Docker*) và **Frontend** (*Node.js Dev Server*) chỉ với một thao tác.
+Hệ thống đã tích hợp sẵn script **`start-project.bat`** ở thư mục gốc của dự án, giúp bạn tự động hóa việc khởi chạy đồng thời cả **Backend** (*chạy trên Docker*) và **Frontend** (*Node.js Dev Server*) chỉ với một thao tác.
 ### Các bước thực hiện:
 
 1. **Chuẩn bị môi trường:**
@@ -30,20 +30,20 @@ Hệ thống đã tích hợp sẵn script **`start_project.bat`** ở thư mụ
    - Kiểm tra và đảm bảo các file cấu hình `.env` đã được thiết lập đầy đủ bên trong thư mục `backend/` và `frontend/`.
 
 2. **Khởi chạy script:**
-   - Nhấp đúp chuột (Double-click) trực tiếp vào file **`start_project.bat`** ở thư mục gốc của dự án.
+   - Nhấp đúp chuột (Double-click) trực tiếp vào file **`start-project.bat`** ở thư mục gốc của dự án.
 
    - Hoặc mở **Command Prompt (CMD)** tại thư mục gốc dự án và gõ lệnh:
      ```cmd
-     start_project.bat
+     start-project.bat
      ```
 
 ### Quy trình tự động xử lý của Script:
 
-1. **Khởi chạy Backend:** Script mở một cửa sổ CMD mới mang tên `"Backend Server"` để tự động chạy `backend/run_docker.bat` (kiểm tra mã nguồn, build và bật Docker containers).
+1. **Khởi chạy Backend:** Script mở một cửa sổ CMD mới mang tên `"Backend Server"` để tự động chạy `backend/run-docker.bat` (kiểm tra mã nguồn, build và bật Docker containers).
 
 2. **Tạm dừng 5 giây:** Đợi các dịch vụ Backend (Database & FastAPI) bắt đầu khởi tạo.
 
-3. **Khởi chạy Frontend:** Script mở tiếp cửa sổ CMD mới mang tên `"Frontend Server"` để chạy `frontend/start_frontend.bat` (kiểm tra `node_modules`, cài dependencies nếu thiếu và khởi chạy `npm run dev`).
+3. **Khởi chạy Frontend:** Script mở tiếp cửa sổ CMD mới mang tên `"Frontend Server"` để chạy `frontend/start-frontend.bat` (kiểm tra `node_modules`, cài dependencies nếu thiếu và khởi chạy `npm run dev`).
 
 ### Kiểm tra sau khi khởi chạy:
 Sau khi script hoàn tất, sẽ có **2 cửa sổ Command Prompt riêng biệt** hoạt động song song. Bạn có thể truy cập hệ thống tại:

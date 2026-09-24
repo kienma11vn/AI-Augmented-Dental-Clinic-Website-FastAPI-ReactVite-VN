@@ -1,6 +1,14 @@
 # 🦷 Dental Clinic AI - Hệ Thống Quản Lý Phòng Khám Nha Khoa Tích Hợp AI
 
-**Dental Clinic AI** là hệ thống quản lý phòng khám nha khoa toàn diện tích hợp trợ lý AI thông minh. Hệ thống được thiết kế theo kiến trúc tách biệt Frontend và Backend, hỗ trợ quản lý toàn bộ quy trình vận hành từ tiếp đón bệnh nhân, xếp lịch hẹn khám, ghi nhận hồ sơ điều trị, lập hóa đơn thanh toán cho đến báo cáo doanh thu và bảo mật dữ liệu PII.
+**Dental Clinic AI** (*Dental Care AI*) là hệ thống quản lý phòng khám nha khoa toàn diện tích hợp trợ lý AI thông minh. Hệ thống được thiết kế theo kiến trúc tách biệt Frontend và Backend, hỗ trợ quản lý toàn bộ quy trình vận hành từ tiếp đón bệnh nhân, xếp lịch hẹn khám, ghi nhận hồ sơ điều trị, lập hóa đơn thanh toán cho đến báo cáo doanh thu và bảo mật dữ liệu PII.
+
+<img width="1366" height="720" alt="image" src="https://github.com/user-attachments/assets/d4122185-e423-46e7-9976-5473f7d5cd44" />
+
+<img width="1366" height="720" alt="image" src="https://github.com/user-attachments/assets/d421bed3-001c-4aa2-af78-6a094db26f12" />
+
+<img width="1366" height="720" alt="image" src="https://github.com/user-attachments/assets/2b7505e5-d188-49e9-a8be-a08f042080d2" />
+
+<img width="1366" height="720" alt="image" src="https://github.com/user-attachments/assets/5da83e85-8153-4aa3-9c51-50203ca1223c" />
 
 ---
 
@@ -22,6 +30,8 @@
 
 ### 1. Sơ đồ kiến trúc tổng quan
 
+<img width="903" height="469" alt="SoDoKienTrucHeThong drawio" src="https://github.com/user-attachments/assets/879bd44e-fea0-4cf2-87dd-bfb8dddf17ca" />
+
 (Chi tiết mô hình triển khai Production xem tại `PRODUCTION-DEPLOYMENT.md`).
 
 ### 2. Công nghệ sử dụng
@@ -42,25 +52,25 @@
 
 ```text
 dental-clinic-ai/
-├── start_project.bat           # Script khởi chạy tự động cả Backend & Frontend
+├── start-project.bat           # Script khởi chạy tự động cả Backend & Frontend
 ├── INSTALLATION-GUIDE.md       # Hướng dẫn cài đặt chi tiết
-├── ENV-SETUP-GUIDE.md          # Hướng dẫn thiết lập biến môi trường
 ├── PRODUCTION-DEPLOYMENT.md    # Hướng dẫn triển khai Production
 │
 ├── backend/                    # Mã nguồn Backend Python / FastAPI
 │   ├── app/                    # Module ứng dụng chính (Routers, Models, RBAC, PII, AI)
 │   ├── alembic/                # Migration cơ sở dữ liệu
 │   ├── tests/                  # Kiểm thử tự động Pytest
+│   ├── ENV-SETUP-GUIDE.md      # Hướng dẫn thiết lập biến môi trường
 │   ├── Dockerfile              # Dockerfile đóng gói Backend
 │   ├── docker-compose.yml      # Cấu hình Docker Compose (FastAPI + PostgreSQL)
-│   ├── run_docker.bat          # Script khởi chạy Backend bằng Docker
-│   └── run_venv.bat            # Script khởi chạy Backend bằng Python venv
+│   ├── run-docker.bat          # Script khởi chạy Backend bằng Docker
+│   └── run-venv.bat            # Script khởi chạy Backend bằng Python venv
 │
 └── frontend/                   # Mã nguồn Frontend React / Vite
     ├── src/                    # Components, Pages, API Clients, Routes
     ├── package.json            # Thư viện phụ thuộc Node.js
     ├── vite.config.js          # Cấu hình Server Vite
-    └── start_frontend.bat      # Script khởi chạy Frontend nhanh
+    └── start-frontend.bat      # Script khởi chạy Frontend nhanh
 ```
 
 ---
@@ -83,21 +93,21 @@ dental-clinic-ai/
 
 ## 🚀 Hướng Dẫn Khởi Chạy Nhanh
 
-### Cách 1: Tự động hóa bằng Script Batch `start_project.bat` với Docker (Dành cho Windows - Khuyên dùng)
+### Cách 1: Tự động hóa bằng Script Batch `start-project.bat` với Docker (Dành cho Windows - Khuyên dùng)
 
 1. Bật ứng dụng **Docker Desktop**.
 
 2. Đảm bảo đã thiết lập các file `.env` ở cả thư mục `backend/` và `frontend/`.
 
-3. Nhấp đúp chuột vào file **`start_project.bat`** ở thư mục gốc.
+3. Nhấp đúp chuột vào file **`start-project.bat`** ở thư mục gốc.
 
 > **Quy trình script tự thực hiện:**
 >
-> 1. Mở cửa sổ CMD khởi chạy `backend/run_docker.bat` (kiểm tra mã nguồn, build container và bật Docker).
+> 1. Mở cửa sổ CMD khởi chạy `backend/run-docker.bat` (kiểm tra mã nguồn, build container và bật Docker).
 > 
 > 2. Chờ 5 giây khởi tạo ứng dụng.
 > 
-> 3. Mở cửa sổ CMD khởi chạy `frontend/start_frontend.bat` (kiểm tra `node_modules`, cài thư viện và chạy `npm run dev`).
+> 3. Mở cửa sổ CMD khởi chạy `frontend/start-frontend.bat` (kiểm tra `node_modules`, cài thư viện và chạy `npm run dev`).
 
 ---
 
@@ -155,7 +165,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 # AI Config
 GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-3.6-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 
 # CORS
 CORS_ORIGINS=http://localhost:5173,http://localhost:3000
@@ -171,7 +181,7 @@ MAIL_SSL_TLS=False
 
 ```
 
-(Chi tiết hướng dẫn lấy API key và tạo `JWT_SECRET` xem thêm tại `ENV-SETUP-GUIDE.md`).
+(Chi tiết hướng dẫn lấy API key và tạo `JWT_SECRET` xem thêm tại `backend/ENV-SETUP-GUIDE.md`).
 
 ### 2. Frontend (`frontend/.env`)
 
@@ -239,7 +249,7 @@ pytest -q
 
 * **`INSTALLATION-GUIDE.md`**: Hướng dẫn cài đặt & khởi chạy chi tiết từng bước.
 
-* **`ENV-SETUP-GUIDE.md`**: Hướng dẫn chi tiết cách tạo và lấy các biến môi trường nhạy cảm.
+* **`backend/ENV-SETUP-GUIDE.md`**: Hướng dẫn chi tiết cách tạo và lấy các biến môi trường nhạy cảm.
 
 * **`PRODUCTION-DEPLOYMENT.md`**: Hướng dẫn tự host hệ thống trên VPS, Vercel, Neon/Supabase và cấu hình Nginx/SSL.
 
