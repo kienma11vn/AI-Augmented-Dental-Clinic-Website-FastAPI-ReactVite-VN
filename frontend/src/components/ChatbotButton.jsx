@@ -15,6 +15,15 @@ export default function ChatbotButton({ currentUser }) {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
   const chatEndRef = useRef(null);
+  
+  // Lưu toàn bộ lịch sử nhận từ API
+  const [allHistory, setAllHistory] = useState([]);
+  // Số lượng tin nhắn đang hiển thị
+  const [visibleCount, setVisibleCount] = useState(5);
+  // Ref quản lý khung cuộn tin nhắn
+  const chatContainerRef = useRef(null);
+  // Đánh dấu có phải lần cuộn tải tin nhắn cũ hay không
+  const isLoadingMoreRef = useRef(false);
 
   // Dùng localStorage để lưu session_id bền vững theo ID từng user
   const localStorageKey = activeUser?.id 
@@ -27,14 +36,18 @@ export default function ChatbotButton({ currentUser }) {
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !isLoadingMoreRef.current) {
       scrollToBottom();
     }
+    // Reset lại cờ sau khi render xong
+    isLoadingMoreRef.current = false;
   }, [messages, isOpen]);
 
   // Nạp lại Session ID & Lịch sử từ localStorage khi đăng nhập / chuyển tài khoản
   useEffect(() => {
     setMessages([]);
+    setAllHistory([]);
+    setVisibleCount(5);
     const savedSession = localStorage.getItem(localStorageKey);
 
     if (savedSession) {
@@ -42,12 +55,15 @@ export default function ChatbotButton({ currentUser }) {
       ragApi.getHistory(savedSession)
         .then((data) => {
           if (data && data.length > 0) {
-            setMessages(data.map(item => ({
+            const formatted = data.map(item => ({
               sender: item.sender === 'user' ? 'user' : 'model',
               text: item.message
-            })));
+            }));
+            
+            setAllHistory(formatted);
+            // Chỉ lấy 5 tin nhắn mới nhất để hiển thị ban đầu
+            setMessages(formatted.slice(-5));
           } else {
-            // Nếu session cũ không có tin nhắn (hoặc bị lỗi), reset session
             setSessionId(null);
             localStorage.removeItem(localStorageKey);
           }
@@ -61,14 +77,39 @@ export default function ChatbotButton({ currentUser }) {
     }
   }, [activeUser?.id, localStorageKey]);
 
+  const handleScroll = (e) => {
+    const container = e.target;
+    // Khi cuộn chạm đỉnh trên cùng (scrollTop === 0) và còn tin nhắn chưa hiển thị
+    if (container.scrollTop === 0 && messages.length < allHistory.length) {
+      isLoadingMoreRef.current = true;
+      const oldScrollHeight = container.scrollHeight;
+
+      const nextCount = visibleCount + 5;
+      setVisibleCount(nextCount);
+      // Lấy thêm 5 tin nhắn tiếp theo về phía trước
+      setMessages(allHistory.slice(-nextCount));
+
+      // Giữ nguyên vị trí cuộn tương đối để trải nghiệm người dùng không bị giật
+      requestAnimationFrame(() => {
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight - oldScrollHeight;
+        }
+      });
+    }
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim() || loading) return;
-
-    const userText = inputMessage;
-    setInputMessage('');
-    setMessages((prev) => [...prev, { sender: 'user', text: userText }]);
+	
+	const userText = inputMessage;
+    setInputMessage('');          
     setLoading(true);
+
+    const newMsg = { sender: 'user', text: userText };
+    setMessages((prev) => [...prev, newMsg]);
+    setAllHistory((prev) => [...prev, newMsg]);
+	isLoadingMoreRef.current = false; // Đảm bảo tự động cuộn xuống khi gửi tin mới
 
     try {
       const res = await ragApi.sendMessage(userText, sessionId);
@@ -79,10 +120,9 @@ export default function ChatbotButton({ currentUser }) {
         localStorage.setItem(localStorageKey, res.session_id);
       }
 
-      setMessages((prev) => [
-        ...prev,
-        { sender: 'model', text: res.response },
-      ]);
+      const aiMsg = { sender: 'model', text: res.response };
+	  setMessages((prev) => [...prev, aiMsg]);
+      setAllHistory((prev) => [...prev, aiMsg]);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
@@ -230,7 +270,17 @@ export default function ChatbotButton({ currentUser }) {
               </div>
 
               {/* Nội dung tin nhắn */}
-              <div className="flex-1 p-4 overflow-y-auto space-y-3.5 bg-slate-50/50 dark:bg-slate-950/50 text-sm transition-colors">
+              <div
+				ref={chatContainerRef}
+				onScroll={handleScroll}
+				className="flex-1 p-4 overflow-y-auto space-y-3.5 bg-slate-50/50 dark:bg-slate-950/50 text-sm transition-colors"
+			  >
+			    {/* Hiển thị dòng gợi ý khi vẫn còn tin nhắn cũ chưa tải hết */}
+				{messages.length < allHistory.length && (
+				  <div className="text-center py-1 text-[11px] text-slate-400 font-medium">
+					▲ Cuộn lên trên để xem tin nhắn cũ hơn ({allHistory.length - messages.length} tin nhắn còn lại)
+				  </div>
+				)}			  
                 {messages.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center p-4 text-slate-400 space-y-2.5">
                     <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 text-3xl shadow-sm transition-colors">
