@@ -4,6 +4,7 @@ import invoiceApi from '../../api/invoiceApi';
 import discountProgramsApi from '../../api/discountProgramsApi';
 import medicalRecordApi from '../../api/medicalRecordApi';
 import { doctorApi } from '../../api/doctorApi';
+import appointmentApi from '../../api/appointmentApi';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -109,6 +110,9 @@ export default function AccountantInvoiceManagement() {
   const [searchDoctor, setSearchDoctor] = useState('');
   const [searchDate, setSearchDate] = useState('');
   const [isFiltered, setIsFiltered] = useState(false);
+  
+  const [doctors, setDoctors] = useState([]);
+  const [patients, setPatients] = useState([]);
 
   // Modal Quản lý Mã Giảm Giá
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
@@ -161,17 +165,32 @@ export default function AccountantInvoiceManagement() {
     setLoading(true);
     setError('');
     try {
-      const [resInvoices, resDiscounts, resDoctors, resRecords] = await Promise.all([
+      const [resInvoices, resDiscounts, resDoctors, resRecords, resPatients] = await Promise.all([
         invoiceApi.getInvoices().catch(() => []),
         discountProgramsApi.getDiscountPrograms().catch(() => []),
         doctorApi.getAll().catch(() => []),
         medicalRecordApi.getAll().catch(() => []),
+        appointmentApi.getPatients().catch(() => []),
       ]);
 
       const invList = Array.isArray(resInvoices?.data) ? resInvoices.data : Array.isArray(resInvoices) ? resInvoices : [];
       const discList = Array.isArray(resDiscounts?.data) ? resDiscounts.data : Array.isArray(resDiscounts) ? resDiscounts : [];
-      const docList = Array.isArray(resDoctors?.data) ? resDoctors.data : Array.isArray(resDoctors) ? resDoctors : [];
+      
+      const docList = Array.isArray(resDoctors?.data)
+        ? resDoctors.data
+        : Array.isArray(resDoctors)
+        ? resDoctors
+        : Array.isArray(resDoctors?.doctors)
+        ? resDoctors.doctors
+        : Array.isArray(resDoctors?.data?.doctors)
+        ? resDoctors.data.doctors
+        : [];
+
       const recList = Array.isArray(resRecords?.data) ? resRecords.data : Array.isArray(resRecords) ? resRecords : [];
+      const patList = Array.isArray(resPatients?.data) ? resPatients.data : Array.isArray(resPatients) ? resPatients : [];
+
+      setDoctors(docList);
+      setPatients(patList);
 
       const docMap = {};
       docList.forEach((d) => {
@@ -311,30 +330,81 @@ export default function AccountantInvoiceManagement() {
   }, [invoices, getDoctorName]);
 
   const patientOptions = useMemo(() => {
-    const set = new Set();
+    if (Array.isArray(patients) && patients.length > 0) {
+      return patients.map((p) => ({
+        id: p.full_name || p.name,
+        title: p.full_name || p.name,
+        subTitle: `Mã BN: #${p.id} | SĐT: ${p.phone || 'Chưa có'}`,
+        displayText: p.full_name || p.name,
+      }));
+    }
+	
+    const map = new Map();
     invoices.forEach((inv) => {
       const name = getPatientName(inv);
-      if (name) set.add(name);
+      if (name && !map.has(name)) {
+        const phone = inv.patient?.phone || inv.patient_phone || inv.phone;
+        const pId = inv.patient?.id || inv.patient_id;
+        const subTitle = phone ? `SĐT: ${phone}` : pId ? `Mã BN: #${pId}` : 'Bệnh nhân phòng khám';
+        map.set(name, {
+          id: name,
+          title: name,
+          subTitle: subTitle,
+          displayText: name,
+        });
+      }
     });
-    return Array.from(set).map((name) => ({
-      id: name,
-      title: name,
-      displayText: name,
-    }));
-  }, [invoices]);
+    return Array.from(map.values());
+  }, [patients, invoices]);
 
   const doctorOptions = useMemo(() => {
-    const set = new Set();
+    if (Array.isArray(doctors) && doctors.length > 0) {
+      return doctors.map((d) => {
+        const name = d.full_name || d.name || d.user?.full_name || `Bác sĩ #${d.id}`;
+        const specialty = d.specialty || d.specialization || d.user?.specialty;
+        const docId = d.id || d.doctor_id;
+
+        return {
+          id: name,
+          title: name,
+          subTitle: [docId ? `Mã BS: #${docId}` : '', specialty ? `Chuyên khoa: ${specialty}` : ''].filter(Boolean).join(' | '),
+          displayText: docId ? `[Mã BS: #${docId}] ${name}` : name,
+        };
+      });
+    }
+
+    const map = new Map();
     invoices.forEach((inv) => {
       const name = getDoctorName(inv);
-      if (name) set.add(name);
+      if (name && name !== 'Bác sĩ phòng khám' && !map.has(name)) {
+        // Lấy thông tin bác sĩ từ hóa đơn hoặc hồ sơ bệnh án liên kết (recordsMap)
+        const rec = inv.medical_record_id ? recordsMap[inv.medical_record_id] : inv.medical_record;
+        const docObj = inv.doctor || inv.medical_record?.doctor || rec?.doctor;
+
+        const specialty =
+          docObj?.specialty ||
+          docObj?.specialization ||
+          inv.doctor_specialty ||
+          inv.specialty;
+
+        const docId =
+          docObj?.id ||
+          inv.doctor_id ||
+          rec?.doctor_id;
+
+        const subTitle = [docId ? `Mã BS: #${docId}` : '', specialty ? `Chuyên khoa: ${specialty}` : ''].filter(Boolean).join(' | ') || 'Bác sĩ phòng khám';
+
+        map.set(name, {
+          id: name,
+          title: name,
+          subTitle: subTitle,
+          displayText: docId ? `[Mã BS: #${docId}] ${name}` : name,
+        });
+      }
     });
-    return Array.from(set).map((name) => ({
-      id: name,
-      title: name,
-      displayText: name,
-    }));
-  }, [invoices, getDoctorName]);
+
+    return Array.from(map.values());
+  }, [doctors, invoices, getDoctorName, recordsMap]);
 
   const tabCounts = useMemo(() => {
     const now = new Date();
