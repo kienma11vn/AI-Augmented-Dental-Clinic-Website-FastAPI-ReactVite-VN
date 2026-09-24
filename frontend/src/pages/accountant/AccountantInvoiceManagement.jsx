@@ -7,6 +7,88 @@ import { doctorApi } from '../../api/doctorApi';
 
 const ITEMS_PER_PAGE = 10;
 
+function AutocompleteInput({ label, placeholder, options, value, onChange, isIdField = false }) {
+  const [searchTerm, setSearchTerm] = useState(value || '');
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setSearchTerm(value || '');
+  }, [value]);
+
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt.displayText.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (opt.title && opt.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (opt.subTitle && opt.subTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      String(opt.id).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="relative">
+      {label && <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{label}</label>}
+      <div className="relative">
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={searchTerm}
+          onChange={(e) => {
+            const val = e.target.value;
+            setSearchTerm(val);
+            onChange(val);
+            setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+          className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 placeholder-slate-400 dark:placeholder-slate-500"
+        />
+        {value && (
+          <button
+            type="button"
+            onClick={() => {
+              onChange('');
+              setSearchTerm('');
+            }}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold text-xs"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {isOpen && filteredOptions.length > 0 && (
+        <ul className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+          {filteredOptions.map((opt, idx) => (
+            <li
+              key={`${opt.id}-${idx}`}
+              onMouseDown={() => {
+                const selectedVal = isIdField ? String(opt.id) : opt.displayText;
+                onChange(selectedVal);
+                setSearchTerm(selectedVal);
+                setIsOpen(false);
+              }}
+              className="p-2.5 hover:bg-sky-50 dark:hover:bg-sky-950/50 cursor-pointer text-sm border-b border-slate-100 dark:border-slate-700/60 last:border-b-0 text-slate-700 dark:text-slate-200 flex justify-between items-center"
+            >
+              <div>
+                {isIdField && (
+                  <span className="font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-900/40 px-1.5 py-0.5 rounded mr-1.5 text-xs">
+                    HĐ #{opt.id}
+                  </span>
+                )}
+                <span className="font-medium text-slate-800 dark:text-slate-200">{opt.title}</span>
+                {opt.subTitle && (
+                  <span className="text-slate-400 dark:text-slate-400 text-xs block mt-0.5">
+                    {opt.subTitle}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function AccountantInvoiceManagement() {
   const [invoices, setInvoices] = useState([]);
   const [discountPrograms, setDiscountPrograms] = useState([]);
@@ -219,31 +301,39 @@ export default function AccountantInvoiceManagement() {
     setIsPayModalOpen(true);
   };
 
-  const invoiceSuggestions = useMemo(() => {
+  const invoiceOptions = useMemo(() => {
     return invoices.map((inv) => ({
       id: String(inv.id),
-      patientName: getPatientName(inv),
-      doctorName: getDoctorName(inv),
-      date: formatDate(inv.created_at || inv.createdAt),
+      title: `Bệnh nhân: ${getPatientName(inv)}`,
+      subTitle: `Bác sĩ: ${getDoctorName(inv)} | Ngày: ${formatDate(inv.created_at || inv.createdAt)}`,
+      displayText: String(inv.id),
     }));
   }, [invoices, getDoctorName]);
 
-  const patientSuggestions = useMemo(() => {
+  const patientOptions = useMemo(() => {
     const set = new Set();
     invoices.forEach((inv) => {
       const name = getPatientName(inv);
       if (name) set.add(name);
     });
-    return Array.from(set);
+    return Array.from(set).map((name) => ({
+      id: name,
+      title: name,
+      displayText: name,
+    }));
   }, [invoices]);
 
-  const doctorSuggestions = useMemo(() => {
+  const doctorOptions = useMemo(() => {
     const set = new Set();
     invoices.forEach((inv) => {
       const name = getDoctorName(inv);
       if (name) set.add(name);
     });
-    return Array.from(set);
+    return Array.from(set).map((name) => ({
+      id: name,
+      title: name,
+      displayText: name,
+    }));
   }, [invoices, getDoctorName]);
 
   const tabCounts = useMemo(() => {
@@ -638,57 +728,35 @@ export default function AccountantInvoiceManagement() {
             </div>
 
             <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Mã Hóa đơn</label>
-                <input
-                  type="text"
-                  list="invoice-id-list"
-                  placeholder="Nhập hoặc chọn mã HĐ..."
-                  value={searchInvoiceId}
-                  onChange={(e) => setSearchInvoiceId(e.target.value)}
-                  className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 placeholder-slate-400 dark:placeholder-slate-500"
-                />
-                <datalist id="invoice-id-list">
-                  {invoiceSuggestions.map((item) => (
-                    <option key={item.id} value={item.id}>{`HĐ #${item.id} - ${item.patientName}`}</option>
-                  ))}
-                </datalist>
-              </div>
+              {/* Mã Hóa đơn Autocomplete */}
+              <AutocompleteInput
+                label="Mã Hóa đơn"
+                placeholder="Nhập hoặc chọn mã HĐ..."
+                options={invoiceOptions}
+                value={searchInvoiceId}
+                onChange={(val) => setSearchInvoiceId(val)}
+                isIdField={true}
+              />
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tên Bệnh nhân</label>
-                <input
-                  type="text"
-                  list="patient-list"
-                  placeholder="Nhập tên bệnh nhân..."
-                  value={searchPatient}
-                  onChange={(e) => setSearchPatient(e.target.value)}
-                  className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 placeholder-slate-400 dark:placeholder-slate-500"
-                />
-                <datalist id="patient-list">
-                  {patientSuggestions.map((name) => (
-                    <option key={name} value={name} />
-                  ))}
-                </datalist>
-              </div>
+              {/* Tên Bệnh nhân Autocomplete */}
+              <AutocompleteInput
+                label="Tên Bệnh nhân"
+                placeholder="Nhập tên bệnh nhân..."
+                options={patientOptions}
+                value={searchPatient}
+                onChange={(val) => setSearchPatient(val)}
+              />
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Bác sĩ phụ trách</label>
-                <input
-                  type="text"
-                  list="doctor-list"
-                  placeholder="Nhập tên bác sĩ..."
-                  value={searchDoctor}
-                  onChange={(e) => setSearchDoctor(e.target.value)}
-                  className="w-full p-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 placeholder-slate-400 dark:placeholder-slate-500"
-                />
-                <datalist id="doctor-list">
-                  {doctorSuggestions.map((name) => (
-                    <option key={name} value={name} />
-                  ))}
-                </datalist>
-              </div>
-
+              {/* Bác sĩ phụ trách Autocomplete */}
+              <AutocompleteInput
+                label="Bác sĩ phụ trách"
+                placeholder="Nhập tên bác sĩ..."
+                options={doctorOptions}
+                value={searchDoctor}
+                onChange={(val) => setSearchDoctor(val)}
+              />
+			  
+			  {/* Ngày lập hóa đơn */}
               <div>
                 <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Ngày lập hóa đơn</label>
                 <input
