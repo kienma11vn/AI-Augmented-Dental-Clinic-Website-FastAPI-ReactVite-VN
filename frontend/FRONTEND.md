@@ -1,4 +1,4 @@
-# 🦷 Dental Clinic AI - Frontend — Hệ thống Quản lý Nha khoa Tích hợp AI
+# 🦷 AI-Augmented Dental Clinic - Frontend — Hệ thống Quản lý Nha khoa Tích hợp AI
 
 Hệ thống Quản lý Phòng khám Nha khoa Tích hợp AI được xây dựng bằng **React**, **Vite**, **Tailwind CSS** và **Axios**.
 

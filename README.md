@@ -1,4 +1,4 @@
-# 🦷 AI-Augmented Dental Clinic - Hệ Thống Quản Lý Phòng Khám Nha Khoa Tích Hợp AI
+# 🦷 AI-AUGMENTED DENTAL CLINIC - Hệ Thống Quản Lý Phòng Khám Nha Khoa Tích Hợp AI
 
 **AI-Augmented Dental Clinic** (*Dental Care*) là hệ thống quản lý phòng khám nha khoa toàn diện tích hợp trợ lý AI thông minh. Hệ thống được thiết kế theo kiến trúc tách biệt Frontend và Backend, hỗ trợ quản lý toàn bộ quy trình vận hành từ tiếp đón bệnh nhân, xếp lịch hẹn khám, ghi nhận hồ sơ điều trị, lập hóa đơn thanh toán cho đến báo cáo doanh thu và bảo mật dữ liệu PII.
 
@@ -12,7 +12,7 @@
 
 ---
 
-## 📌 Tính Năng Nổi Bật & Ràng Buộc Nghiệp Vụ
+## 📌 TÍNH NĂNG NỔI BẬT & RÀNG BUỘC NGHIỆP VỤ
 
 * **Phân quyền dựa trên vai trò (RBAC):** Hệ thống phân chia 5 vai trò riêng biệt gồm *Quản trị viên (Admin)*, *Lễ tân (Receptionist)*, *Bác sĩ (Doctor)*, *Kế toán (Accountant)* và *Bệnh nhân (Patient)* với ma trận quyền hạn chi tiết.
 
@@ -26,7 +26,7 @@
 
 ---
 
-## 🏗️ Kiến Trúc Hệ Thống & Công Nghệ
+## 🏗️ KIẾN TRÚC HỆ THỐNG & CÔNG NGHỆ
 
 ### 1. Sơ đồ kiến trúc tổng quan
 
@@ -48,7 +48,7 @@
 
 ---
 
-## 📁 Cấu Trúc Thư Mục Dự Án
+## 📁 CẤU TRÚC THƯ MỤC DỰ ÁN
 
 ```text
 dental-clinic-ai/
@@ -75,7 +75,7 @@ dental-clinic-ai/
 
 ---
 
-## ⚙️ Yêu Cầu Môi Trường
+## ⚙️ YÊU CẦU MÔI TRƯỜNG
 
 Để chạy được ứng dụng, máy tính cần cài đặt sẵn:
 
@@ -91,7 +91,7 @@ dental-clinic-ai/
 
 ---
 
-## 🚀 Hướng Dẫn Khởi Chạy Nhanh
+## 🚀 HƯỚNG DẪN KHỞI CHẠY NHANH
 
 ### Cách 1: Tự động hóa bằng Script Batch `start-project.bat` với Docker (Dành cho Windows - Khuyên dùng)
 
@@ -150,7 +150,7 @@ npm run dev
 
 ---
 
-## 🔑 Cấu Hình Biến Môi Trường (`.env`)
+## 🔑 CẤU HÌNH BIẾN MÔI TRƯỜNG (`.env`)
 
 ### 1. Backend (`backend/.env`)
 
@@ -192,7 +192,7 @@ VITE_API_BASE_URL=http://localhost:8000/api/v1
 
 ---
 
-## 👥 Tài Khoản Dùng Thử (Demo Accounts)
+## 👥 TÀI KHOẢN DÙNG THỬ (DEMO ACCOUNTS)
 
 Sau khi nạp dữ liệu mẫu bằng câu lệnh `python -m app.seed` (hoặc khởi chạy Docker mặc định), hệ thống cung cấp các tài khoản thử nghiệm tương ứng với từng vai trò:
 
@@ -208,7 +208,7 @@ Sau khi nạp dữ liệu mẫu bằng câu lệnh `python -m app.seed` (hoặc 
 
 ---
 
-## 🧪 Kiểm Thử Tự Động (Testing)
+## 🧪 KIỂM THỬ TỰ ĐỘNG (TESTING)
 
 Hệ thống hỗ trợ kiểm thử tự động cho Backend với `pytest`:
 
@@ -231,7 +231,7 @@ pytest -q
 
 ---
 
-## 🌐 Danh Sách API Endpoints Chính (`/api/v1`)
+## 🌐 DANH SÁCH API ENDPOINTS CHÍNH (`/api/v1`)
 
 | Phân nhóm | Endpoint tiêu biểu | Chức năng chính |
 | --- | --- | --- |
@@ -245,7 +245,7 @@ pytest -q
 
 ---
 
-## 📄 Tài Liệu Tham Khảo Thêm
+## 📄 TÀI LIỆU THAM KHẢO THÊM
 
 * **`INSTALLATION-GUIDE.md`**: Hướng dẫn cài đặt & khởi chạy chi tiết từng bước.
 

@@ -1,4 +1,4 @@
-# 🦷 Dental Clinic AI - Hướng Dẫn Cài Đặt & Khởi Chạy Hệ Thống
+# 🦷 AI-Augmented Dental Clinic - Hướng Dẫn Cài Đặt & Khởi Chạy Hệ Thống
 
 Tổng hợp cơ bản toàn bộ các bước cài đặt, cấu hình môi trường và khởi chạy cho cả 2 phần (module) **Backend** (Python/FastAPI) và **Frontend** (React/Vite) của hệ thống Quản lý Phòng khám Nha khoa Tích hợp AI.
 

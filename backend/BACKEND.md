@@ -1,4 +1,4 @@
-# 🦷 Dental Clinic AI - Backend — Hệ thống Quản lý Nha khoa Tích hợp AI
+# 🦷 AI-Augmented Dental Clinic - Backend — Hệ thống Quản lý Nha khoa Tích hợp AI
 
 REST API viết bằng **Python + FastAPI + SQLAlchemy + Alembic + PostgreSQL**, tích hợp **Google Gemini API** làm trợ lý hành chính.
 Backend này cần được host trên máy cá nhân, VPS hoặc nền tảng PaaS theo hướng dẫn bên dưới (chi tiết deploy production xem `../DEPLOYMENT.md`).

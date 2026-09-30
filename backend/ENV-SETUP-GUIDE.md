@@ -1,8 +1,8 @@
 # Hướng Dẫn Chi Tiết Thiết Lập Biến Môi Trường (.env)
 
-Tài liệu này hướng dẫn từng bước lấy và cấu hình các thông số thực tế cho dự án **Dental Clinic AI**.
+Tài liệu này hướng dẫn từng bước lấy và cấu hình các thông số thực tế cho dự án **AI-Augmented Dental Clinic**.
 
-## 📋 Danh Sách Cấu Hình Biến Môi Trường (.env)
+## 📋 Danh sách cấu hình Biến môi trường (.env)
 
 ```
 # Database
@@ -30,7 +30,7 @@ MAIL_STARTTLS=True
 MAIL_SSL_TLS=False
 ```
 
-## 🛠️ Hướng Dẫn Chi Tiết Từng Mục
+## 🛠️ Hướng dẫn chi tiết từng mục
 
 ### 1. Cấu hình DATABASE_URL (PostgreSQL)
 
