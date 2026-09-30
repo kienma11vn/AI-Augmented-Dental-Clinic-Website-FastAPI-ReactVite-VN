@@ -21,7 +21,7 @@ export default function AccountantDashboard() {
               🦷
             </div>
             <div>
-              <h1 className="font-bold text-white text-base leading-tight">Dental Care AI</h1>
+              <h1 className="font-bold text-white text-base leading-tight">Dental Care</h1>
               <span className="text-xs text-sky-400 font-medium">Accountant Portal</span>
             </div>
           </div>

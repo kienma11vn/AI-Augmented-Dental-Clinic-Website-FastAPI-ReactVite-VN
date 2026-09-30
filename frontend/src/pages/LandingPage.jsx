@@ -50,7 +50,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <span className="text-xl font-bold bg-gradient-to-r from-sky-600 to-cyan-500 dark:from-sky-400 dark:to-cyan-400 bg-clip-text text-transparent">
-                  Dental Care AI
+                  Dental Care
                 </span>
                 <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wider uppercase">
                   Hệ thống Nha khoa Thông minh
@@ -331,7 +331,7 @@ export default function LandingPage() {
                 <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold">
                   🦷
                 </div>
-                <span className="text-lg font-bold text-white">Dental Care AI Management System</span>
+                <span className="text-lg font-bold text-white">Dental Care Management System</span>
               </div>
               <p className="text-sm text-slate-400 max-w-sm">
                 Hệ thống quản lý phòng khám nha khoa tích hợp trí tuệ nhân tạo Gemini, đáp ứng đầy đủ quy trình nghiệp vụ từ Lễ tân, Bác sĩ, Kế toán đến Bệnh nhân.
@@ -354,7 +354,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-            © 2026 Dental Care AI System. Tất cả quyền được bảo lưu.
+            © 2026 Dental Care System. Tất cả quyền được bảo lưu.
           </div>
         </footer>
 
