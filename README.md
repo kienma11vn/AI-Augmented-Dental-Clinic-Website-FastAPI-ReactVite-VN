@@ -1,6 +1,6 @@
-# 🦷 Dental Clinic AI - Hệ Thống Quản Lý Phòng Khám Nha Khoa Tích Hợp AI
+# 🦷 AI-Augmented Dental Clinic - Hệ Thống Quản Lý Phòng Khám Nha Khoa Tích Hợp AI
 
-**Dental Clinic AI** (*Dental Care*) là hệ thống quản lý phòng khám nha khoa toàn diện tích hợp trợ lý AI thông minh. Hệ thống được thiết kế theo kiến trúc tách biệt Frontend và Backend, hỗ trợ quản lý toàn bộ quy trình vận hành từ tiếp đón bệnh nhân, xếp lịch hẹn khám, ghi nhận hồ sơ điều trị, lập hóa đơn thanh toán cho đến báo cáo doanh thu và bảo mật dữ liệu PII.
+**AI-Augmented Dental Clinic** (*Dental Care*) là hệ thống quản lý phòng khám nha khoa toàn diện tích hợp trợ lý AI thông minh. Hệ thống được thiết kế theo kiến trúc tách biệt Frontend và Backend, hỗ trợ quản lý toàn bộ quy trình vận hành từ tiếp đón bệnh nhân, xếp lịch hẹn khám, ghi nhận hồ sơ điều trị, lập hóa đơn thanh toán cho đến báo cáo doanh thu và bảo mật dữ liệu PII.
 
 <img width="1366" height="720" alt="image" src="https://github.com/user-attachments/assets/d4122185-e423-46e7-9976-5473f7d5cd44" />
 
