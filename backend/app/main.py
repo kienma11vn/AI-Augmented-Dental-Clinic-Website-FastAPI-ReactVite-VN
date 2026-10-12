@@ -18,7 +18,8 @@ from app.routers import (
     rbac,
     discount_programs,
     notifications,
-    rag_chat
+    rag_chat,
+    ai_sql
 )
 
 app = FastAPI(
@@ -54,7 +55,8 @@ app.include_router(audit.router, prefix="/api/v1/audit-logs", tags=["Audit Logs"
 app.include_router(rbac.router, prefix="/api/v1/rbac", tags=["RBAC"])
 app.include_router(discount_programs.router, prefix="/api/v1/discount-programs", tags=["Discount Programs"])
 app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["Notifications"])
-app.include_router(rag_chat.router, prefix="/api/v1/rag-chat", tags=["Chatbot"])
+app.include_router(rag_chat.router, prefix="/api/v1/rag-chat", tags=["Chatbot"]),
+app.include_router(ai_sql.router, prefix="/api/v1/ai-sql", tags=["AI SQL Chatbot"])
 
 
 @app.get("/health")

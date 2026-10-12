@@ -1,6 +1,12 @@
 services:
   db:
     image: postgres:16
+    command: >
+      postgres
+      -c wal_level=replica
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c hot_standby=on
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -9,11 +15,38 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./primary-init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - pg-network
+
+  db-replica:
+    image: postgres:16
+    container_name: postgres-replica
+    ports:
+      - "5433:5432"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: replica_password
+    entrypoint: >
+      /bin/sh -c "
+      until pg_isready -h db -p 5432 -U postgres; do sleep 1; done;
+      if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
+        rm -rf /var/lib/postgresql/data/*;
+        pg_basebackup -h db -D /var/lib/postgresql/data -U replica_user -vP -R -X stream;
+      fi;
+      exec docker-entrypoint.sh postgres;
+      "
+    volumes:
+      - pgdata_replica:/var/lib/postgresql/data
+    networks:
+      - pg-network
 
   api:
     build: .
@@ -24,9 +57,10 @@ services:
       - .env
     environment:
       - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/dental_clinic
+      - READ_DATABASE_URL=postgresql+psycopg2://postgres:postgres@db-replica:5432/dental_clinic
       - JWT_SECRET=${JWT_SECRET:-change-me-to-a-32-char-random-secret}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
-      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.6-flash}
       - CORS_ORIGINS=http://localhost:5173
       - MAIL_USERNAME=${MAIL_USERNAME}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
@@ -40,6 +74,13 @@ services:
     command: >
       sh -c "alembic upgrade head && python -m app.seed &&
              uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    networks:
+      - pg-network         
 
 volumes:
   pgdata:
+  pgdata_replica:
+  
+networks:
+  pg-network:
+    driver: bridge
