@@ -16,6 +16,8 @@ export default function ChatbotButton({ currentUser }) {
   const [sessionId, setSessionId] = useState(null);
   const chatEndRef = useRef(null);
   
+  // Khai báo State quản lý trạng thái nút Gợi ý câu hỏi
+  const [isSuggested, setIsSuggested] = useState(false);
   // Lưu toàn bộ lịch sử nhận từ API
   const [allHistory, setAllHistory] = useState([]);
   // Số lượng tin nhắn đang hiển thị
@@ -29,6 +31,11 @@ export default function ChatbotButton({ currentUser }) {
   const localStorageKey = activeUser?.id 
     ? `rag_chat_session_${activeUser.id}` 
     : 'rag_chat_session_guest';
+	
+  // Key lưu trạng thái đã nhấn nút "Gợi ý câu hỏi" trong sessionStorage theo từng tài khoản
+  const suggestedStorageKey = activeUser?.id 
+    ? `rag_chat_suggested_asked_${activeUser.id}` 
+    : 'rag_chat_suggested_asked_guest';
 
   // Tự động cuộn xuống tin nhắn mới nhất
   const scrollToBottom = () => {
@@ -76,6 +83,17 @@ export default function ChatbotButton({ currentUser }) {
       setSessionId(null);
     }
   }, [activeUser?.id, localStorageKey]);
+  
+  // Quản lý trạng thái nút "Gợi ý câu hỏi": giữ nguyên khi F5 refresh, reset khi đăng xuất
+  useEffect(() => {
+    if (!activeUser) {
+      sessionStorage.removeItem(suggestedStorageKey);
+      setIsSuggested(false);
+    } else {
+      const suggestedState = sessionStorage.getItem(suggestedStorageKey);
+      setIsSuggested(suggestedState === 'true');
+    }
+  }, [activeUser, suggestedStorageKey]);
 
   const handleScroll = (e) => {
     const container = e.target;
@@ -122,6 +140,53 @@ export default function ChatbotButton({ currentUser }) {
 
       const aiMsg = { sender: 'model', text: res.response };
 	  setMessages((prev) => [...prev, aiMsg]);
+      setAllHistory((prev) => [...prev, aiMsg]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'model',
+          text: '⚠️ Rất tiếc, đã xảy ra lỗi kết nối với Trợ lý AI. Vui lòng thử lại sau!',
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Hàm xử lý gửi câu hỏi "Gợi ý câu hỏi" tới AI
+  const handleSuggestQuestions = async () => {
+    if (isSuggested || loading) return;
+
+    const roleMap = {
+      admin: 'Quản trị viên (Admin)',
+      receptionist: 'Lễ tân',
+      doctor: 'Bác sĩ',
+      accountant: 'Kế toán',
+      patient: 'Bệnh nhân',
+    };
+	
+	const userRoleName = roleMap[activeUser?.role] || activeUser?.role || 'người dùng';
+    const userText = `Hãy gợi ý các câu hỏi thường gặp về cách sử dụng hệ thống phòng khám nha khoa Dental Care dành riêng cho vai trò của tôi là ${userRoleName}.`;
+    setLoading(true);
+    
+    // Đánh dấu đã nhấn nút và lưu vào sessionStorage để không bị mất khi F5
+    setIsSuggested(true);
+    sessionStorage.setItem(suggestedStorageKey, 'true');
+
+    const newMsg = { sender: 'user', text: userText };
+    setMessages((prev) => [...prev, newMsg]);
+    setAllHistory((prev) => [...prev, newMsg]);
+    isLoadingMoreRef.current = false;
+
+    try {
+      const res = await ragApi.sendMessage(userText, sessionId);
+      if (res.session_id) {
+        setSessionId(res.session_id);
+        localStorage.setItem(localStorageKey, res.session_id);
+      }
+      const aiMsg = { sender: 'model', text: res.response };
+      setMessages((prev) => [...prev, aiMsg]);
       setAllHistory((prev) => [...prev, aiMsg]);
     } catch (error) {
       setMessages((prev) => [
@@ -228,6 +293,28 @@ export default function ChatbotButton({ currentUser }) {
 					  />
 					</div>
 				  </div>
+				  
+				  {/* Nút Gợi ý câu hỏi đặt dưới 2 ảnh */}
+                  <button
+                    type="button"
+                    onClick={handleSuggestQuestions}
+                    disabled={isSuggested || loading}
+                    className="w-full mt-1 py-2 px-3 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-600 hover:to-sky-600 disabled:from-slate-300 disabled:to-slate-400 dark:disabled:from-slate-700 dark:disabled:to-slate-800 text-white disabled:text-slate-500 dark:disabled:text-slate-400 shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
+                    title={
+                      isSuggested
+                        ? 'Bạn đã gửi yêu cầu gợi ý câu hỏi trong phiên đăng nhập này'
+                        : 'Nhấn để nhận gợi ý câu hỏi từ AI'
+                    }
+                  >
+                    💡
+					<span 
+                      style={{                        
+                        textShadow: '0px 0px 5px rgba(0, 0, 0, 1)'
+                      }}
+                    >
+                      {isSuggested ? 'Đã gợi ý câu hỏi' : 'Gợi ý câu hỏi'}
+                    </span>
+                  </button>
 
 				</div>
 

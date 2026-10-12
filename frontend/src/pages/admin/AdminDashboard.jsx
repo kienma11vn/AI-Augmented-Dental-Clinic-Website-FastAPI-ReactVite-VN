@@ -11,6 +11,7 @@ import ThemeToggle from '../../components/common/ThemeToggle';
 import ErrorBoundary from '../../components/common/ErrorBoundary';
 
 import ChatbotButton from '../../components/ChatbotButton';
+import SqlChatbot from './SqlChatbot';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -58,7 +59,11 @@ export default function AdminDashboard() {
 
 		{/* Khối dưới của Sidebar */}
 		<div>
-			<ChatbotButton />
+			{/* Cụm nút riêng biệt cho các tính năng Chatbot AI */}
+			<div className="space-y-1 py-2 ">
+			  <SqlChatbot />
+			  <ChatbotButton />
+			</div>
 			
 			<div className="p-4 border-t border-slate-800 dark:border-slate-900">
 			  <div className="mb-3 px-2">

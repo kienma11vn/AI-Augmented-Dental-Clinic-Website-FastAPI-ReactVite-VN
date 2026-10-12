@@ -9,7 +9,7 @@ from google import genai
 
 from app.database import get_read_db
 from app.config import settings
-from app.models import User
+from app.models import User, UserRole
 from app.dependencies import get_current_user
 from app.pii import mask_pii, unmask_pii
 
@@ -118,15 +118,20 @@ async def ai_sql_query(
     read_db: Session = Depends(get_read_db),
     current_user: User = Depends(get_current_user)
 ):
+    # =============================================================
+    # PHÂN QUYỀN: CHỈ CHO PHÉP ADMIN SỬ DỤNG
+    # =============================================================
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Chỉ có tài khoản Quản trị viên (Admin) mới có quyền sử dụng tính năng AI SQL Chatbot."
+        )
+
     try:
-        # -------------------------------------------------------------
-        # Bước 1: PII Masking - Ẩn dữ liệu nhạy cảm trong prompt người dùng
-        # -------------------------------------------------------------
+        # Bước 1: PII Masking
         masked_user_message, pii_mapping = mask_pii(payload.message)
 
-        # -------------------------------------------------------------
-        # Bước 2: Yêu cầu Gemini sinh câu lệnh SQL từ prompt đã mask PII
-        # -------------------------------------------------------------
+        # Bước 2: Sinh câu lệnh SQL từ Gemini
         prompt_sql = f"{SQL_GENERATION_INSTRUCTION}\n\nCâu hỏi của người dùng: {masked_user_message}"
         res_sql = client.models.generate_content(
             model=settings.gemini_model,
@@ -134,7 +139,6 @@ async def ai_sql_query(
         )
         raw_text = res_sql.text or ""
 
-        # Trích xuất SQL từ markdown
         sql_match = re.search(r"```sql\s*(.*?)```", raw_text, re.DOTALL | re.IGNORECASE)
         if not sql_match:
             sql_match = re.search(r"```\s*(SELECT.*?)\s*```", raw_text, re.DOTALL | re.IGNORECASE)
@@ -151,18 +155,14 @@ async def ai_sql_query(
                 generated_sql=None
             )
 
-        # -------------------------------------------------------------
-        # Bước 3: AI Guardrails - Kiểm tra tính an toàn của SQL thu được
-        # -------------------------------------------------------------
+        # Bước 3: Kiểm tra tính an toàn của SQL
         if not validate_sql_safety(generated_sql):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Câu lệnh SQL vi phạm quy tắc an toàn bảo mật (Chỉ cho phép SELECT an toàn)."
             )
 
-        # -------------------------------------------------------------
         # Bước 4: Thực thi câu lệnh SQL trên Read-Replica DB
-        # -------------------------------------------------------------
         try:
             result = read_db.execute(text(generated_sql))
             rows = result.mappings().all()
@@ -173,9 +173,7 @@ async def ai_sql_query(
                 generated_sql=generated_sql
             )
 
-        # -------------------------------------------------------------
-        # Bước 5: Yêu cầu Gemini tổng hợp kết quả trả về
-        # -------------------------------------------------------------
+        # Bước 5: Tổng hợp kết quả từ Gemini
         prompt_summary = (
             f"{SUMMARY_INSTRUCTION}\n\n"
             f"Câu hỏi gốc: {masked_user_message}\n"
@@ -187,9 +185,7 @@ async def ai_sql_query(
             contents=prompt_summary
         )
 
-        # -------------------------------------------------------------
-        # Bước 6: PII Unmasking - Khôi phục dữ liệu gốc trước khi trả về Client
-        # -------------------------------------------------------------
+        # Bước 6: PII Unmasking trước khi trả về Client
         final_response = unmask_pii(res_summary.text or "", pii_mapping)
         unmasked_sql = unmask_pii(generated_sql, pii_mapping)
 
