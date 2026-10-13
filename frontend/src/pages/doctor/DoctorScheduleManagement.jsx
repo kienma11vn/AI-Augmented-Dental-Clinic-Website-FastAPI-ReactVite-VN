@@ -1054,7 +1054,15 @@ export default function DoctorScheduleManagement() {
                         {new Date(apt.start_time).toLocaleString('vi-VN')}
                       </td>
                       <td className="p-3">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                            apt.status === AppointmentStatus.CHECKIN
+                              ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                              : apt.status === AppointmentStatus.CONFIRMED
+                              ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300'
+                              : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
+                          }`}
+                        >
                           {formatAppointmentStatus(apt.status)}
                         </span>
                       </td>
