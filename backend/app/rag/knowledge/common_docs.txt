@@ -1,5 +1,5 @@
 ================================================================================
-TÀI LIỆU HƯỚNG DẪN SỬ DỤNG VÀ BỘ TRI THỨC HỆ THỐNG DENTAL CARE AI
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG VÀ BỘ TRI THỨC HỆ THỐNG DENTAL CARE
 ================================================================================
 Các chức năng chung cơ bản
 
@@ -22,7 +22,7 @@ MỤC LỤC:
 ================================================================================
 1. TỔNG QUAN HỆ THỐNG & THÔNG TIN LIÊN HỆ
 ================================================================================
-- Tên hệ thống: Dental Care AI Management System (Hệ thống Nha khoa Thông minh).
+- Tên hệ thống: AI-Augmented Dental Care Management System (Hệ thống Nha khoa Thông minh).
 - Mục tiêu: Giải pháp quản lý phòng khám và chăm sóc sức khỏe răng miệng hiện đại, ứng dụng Trí tuệ Nhân tạo Gemini AI để tối ưu hóa quy trình điều trị, nhắc lịch và tóm tắt bệnh án.
 - Địa chỉ phòng khám: 123 P. Phan Đình Phùng, T. Thái Nguyên.
 - Hotline hỗ trợ: 0901 234 567

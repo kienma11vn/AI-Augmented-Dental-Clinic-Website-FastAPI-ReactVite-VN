@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+!.env.dev.example
 
 # File lưu vết Hash SHA256 cho Docker
 .last_build_hash

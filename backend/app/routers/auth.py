@@ -149,7 +149,8 @@ async def forgot_password(payload: schemas.ForgotPasswordRequest, db: Session = 
     db.add(audit_log)
     db.commit()
 
-    reset_link = f"http://localhost:5173/reset-password?token={reset_token}"
+    frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173").rstrip("/")
+    reset_link = f"{frontend_url}/reset-password?token={reset_token}"
 
     html_content = f"""
     <p>Xin chào <b>{user.full_name}</b>,</p>

@@ -1,8 +1,8 @@
 ================================================================================
-TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG DENTAL CARE AI - PHÂN HỆ BÁC SĨ (DOCTOR)
+TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG DENTAL CARE - PHÂN HỆ BÁC SĨ (DOCTOR)
 ================================================================================
 
-Tài liệu này cung cấp chi tiết toàn bộ các tính năng, giao diện và quy trình thao tác dành riêng cho người dùng có vai trò Bác sĩ (Doctor) trên hệ thống Dental Care AI. Dữ liệu tài liệu được trích xuất trực tiếp từ mã nguồn giao diện React (.jsx) của phân hệ Bác sĩ.
+Tài liệu này cung cấp chi tiết toàn bộ các tính năng, giao diện và quy trình thao tác dành riêng cho người dùng có vai trò Bác sĩ (Doctor) trên hệ thống Dental Care. Dữ liệu tài liệu được trích xuất trực tiếp từ mã nguồn giao diện React (.jsx) của phân hệ Bác sĩ.
 
 --------------------------------------------------------------------------------
 MỤC LỤC
@@ -172,7 +172,7 @@ B. CÁC THAO TÁC HỒ SƠ ĐIỀU TRỊ:
 Mục đích: Hệ thống tích hợp  trợ lý trí tuệ nhân tạo (AI) giúp tra cứu hướng dẫn vận hành hệ thống thông qua giao diện hội thoại tự nhiên.
 
 1. Mục đích & Vị trí nút bấm:
-   - Cung cấp trợ lý thông minh giải đáp thắc mắc và hướng dẫn chi tiết quy trình sử dụng các chức năng hệ thống Dental Care AI 24/7.   
+   - Cung cấp trợ lý thông minh giải đáp thắc mắc và hướng dẫn chi tiết quy trình sử dụng các chức năng hệ thống Dental Care 24/7.   
    - Nút bấm nằm ở thanh Sidebar cố định với biểu tượng "✨ Chatbot AI", mô tả "Hướng dẫn sử dụng chức năng hệ thống" và nút bấm kích hoạt "Hỏi AI". 
 2. Cấu trúc Giao diện Cửa sổ Chatbot (Modal Popup):
    - Cột bên trái (Banner minh họa): Hiển thị thẻ "Trợ Lý Thông Minh", tiêu đề "CHATBOT AI", cùng 2 ảnh xem trước (/chatbot_button.png và /chatbot_ui_example.png). Người dùng có thể nhấp vào ảnh để mở Modal phóng to hình ảnh.
