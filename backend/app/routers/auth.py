@@ -159,14 +159,21 @@ async def forgot_password(payload: schemas.ForgotPasswordRequest, db: Session = 
     """
 
     message = MessageSchema(
-        subject="[DentalCareAI] Yêu cầu đặt lại mật khẩu",
+        subject="[AI-Augmented Dental Care] Yêu cầu đặt lại mật khẩu",
         recipients=[user.email],
         body=html_content,
         subtype=MessageType.html
     )
 
-    fm = FastMail(conf)
-    await fm.send_message(message)
+    try:
+        fm = FastMail(conf)
+        await fm.send_message(message)
+    except Exception as e:
+        print(f"❌ Lỗi gửi Email SMTP trên Render: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Không thể gửi email khôi phục. Vui lòng kiểm tra lại cấu hình SMTP Server. Chi tiết: {str(e)}"
+        )
 
     return {"message": "Nếu email tồn tại trong hệ thống, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu."}
     
@@ -201,22 +208,34 @@ def change_password(
     
 @router.post("/reset-password")
 def reset_password(payload: schemas.ResetPasswordRequest, db: Session = Depends(get_db)):
+    now_utc = datetime.now(timezone.utc)
+    
     user = db.query(models.User).filter(
-        models.User.reset_token == payload.token,
-        models.User.reset_token_expires_at > datetime.now(timezone.utc)
+        models.User.reset_token == payload.token
     ).first()
 
-    if not user:
+    if not user or not user.reset_token_expires_at:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Mã khôi phục không hợp lệ hoặc đã hết hạn."
+            detail="Mã khôi phục không hợp lệ."
+        )
+
+    # Đảm bảo so sánh datetime an toàn giữa DB và Python
+    expires_at = user.reset_token_expires_at
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+    if expires_at < now_utc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Mã khôi phục đã hết hạn. Vui lòng gửi lại yêu cầu mới."
         )
 
     user.hashed_password = get_password_hash(payload.new_password)
     user.reset_token = None
     user.reset_token_expires_at = None
     
-    # Ghi nhận AuditLog đặt lại mật khẩu qua token thành công
+    # Ghi nhận AuditLog
     audit_log = models.AuditLog(
         user_id=user.id,
         action="POST /api/v1/auth/reset-password",

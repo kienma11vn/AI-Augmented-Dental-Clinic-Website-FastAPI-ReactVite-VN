@@ -35,4 +35,11 @@ export const authApi = {
       token: token,
       new_password: newPassword,
     }),
+	
+  // Đổi mật khẩu cá nhân
+  changePassword: (currentPassword, newPassword) =>
+    axiosClient.post('/auth/change-password', {
+      current_password: currentPassword,
+      new_password: newPassword,
+    }),	
 };

@@ -25,78 +25,30 @@ export default function ChangePassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+	setError('');
+	setSuccess('');
 
-    // Kiểm tra tính hợp lệ dữ liệu
-    if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
+	if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
       setError('Vui lòng điền đầy đủ tất cả các trường thông tin.');
       return;
-    }
-
-    if (formData.newPassword.length < 6) {
+	}
+	if (formData.newPassword.length < 6) {
       setError('Mật khẩu mới phải có ít nhất 6 ký tự.');
       return;
-    }
-
-    if (formData.newPassword !== formData.confirmPassword) {
+	}
+	if (formData.newPassword !== formData.confirmPassword) {
       setError('Mật khẩu mới và xác nhận mật khẩu không trùng khớp.');
       return;
-    }
-
-    if (formData.currentPassword === formData.newPassword) {
-      setError('Mật khẩu mới không được trùng với mật khẩu hiện tại.');
-      return;
-    }
+	}
 
     setLoading(true);
-
     try {
-      const authToken = token || localStorage.getItem('token');
-
-      if (!authToken) {
-        throw new Error('Bạn chưa đăng nhập hoặc phiên làm việc đã hết hạn.');
-      }
-
-      const response = await fetch('/api/v1/auth/change-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({
-          current_password: formData.currentPassword,
-          new_password: formData.newPassword,
-        }),
-      });
-
-      const text = await response.text();
-      const data = text ? JSON.parse(text) : {};
-
-      if (!response.ok) {
-        let errorMessage = 'Đổi mật khẩu thất bại. Vui lòng kiểm tra lại.';
-
-        if (typeof data.detail === 'string') {
-          errorMessage = data.detail;
-        } else if (Array.isArray(data.detail)) {
-          errorMessage = data.detail.map((err) => err.msg).join(', ');
-        } else if (response.status === 401) {
-          errorMessage = 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.';
-        } else if (response.status === 404) {
-          errorMessage = 'Không tìm thấy API đổi mật khẩu (Lỗi 404).';
-        }
-
-        throw new Error(errorMessage);
-      }
-
+      await authApi.changePassword(formData.currentPassword, formData.newPassword);
       setSuccess('Mật khẩu đã được cập nhật thành công!');
-      setFormData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
+      setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
-      setError(err.message || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+      console.error('Lỗi đổi mật khẩu:', err);
+      setError(err.response?.data?.detail || err.message || 'Đổi mật khẩu thất bại.');
     } finally {
       setLoading(false);
     }
