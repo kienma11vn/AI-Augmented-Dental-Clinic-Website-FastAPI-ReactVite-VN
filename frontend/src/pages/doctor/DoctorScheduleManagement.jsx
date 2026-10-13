@@ -933,7 +933,7 @@ export default function DoctorScheduleManagement() {
                         key={n.id}
                         className={`p-2.5 border rounded-xl text-xs space-y-1 ${
                           !n.is_read
-                            ? 'bg-amber-50/90 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800'
+                            ? 'bg-amber-50/90 dark:bg-amber-900/40 border-amber-300 dark:border-amber-800'
                             : 'bg-slate-50 dark:bg-slate-700/40 border-slate-200 dark:border-slate-700 opacity-80'
                         }`}
                       >
@@ -998,8 +998,8 @@ export default function DoctorScheduleManagement() {
                           <span
                             className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                               isCheckin
-                                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
-                                : 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300'
+                                ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300'
+                                : 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300'
                             }`}
                           >
                             {formatAppointmentStatus(apt.status)}
@@ -1057,10 +1057,10 @@ export default function DoctorScheduleManagement() {
                         <span
                           className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                             apt.status === AppointmentStatus.CHECKIN
-                              ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                              ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300'
                               : apt.status === AppointmentStatus.CONFIRMED
-                              ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300'
-                              : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
+                              ? 'bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300'
+                              : 'bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300'
                           }`}
                         >
                           {formatAppointmentStatus(apt.status)}
@@ -1103,7 +1103,7 @@ export default function DoctorScheduleManagement() {
                       {new Date(apt.start_time).toLocaleString('vi-VN')}
                     </td>
                     <td className="p-3">
-                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300">
                         {formatAppointmentStatus(apt.status)}
                       </span>
                     </td>
@@ -1437,7 +1437,7 @@ export default function DoctorScheduleManagement() {
                   <>
                     <div className="py-3 space-y-1">
                       <span className="text-slate-500 dark:text-slate-400 font-medium block">🩺 Dịch vụ đăng ký:</span>
-                      <div className="bg-sky-50 dark:bg-sky-950/40 p-2.5 rounded-xl border border-sky-100 dark:border-sky-900/60 text-sky-900 dark:text-sky-200 font-medium">
+                      <div className="bg-sky-50 dark:bg-sky-900/40 p-2.5 rounded-xl border border-sky-100 dark:border-sky-900/60 text-sky-900 dark:text-sky-200 font-medium">
                         {servicesText}
                       </div>
                     </div>
@@ -1459,7 +1459,7 @@ export default function DoctorScheduleManagement() {
                     <span>⭐</span> Đánh giá & Phản hồi từ Bệnh nhân
                   </h4>
 
-                  <div className="bg-amber-50/60 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200/80 dark:border-amber-800/60 space-y-2">
+                  <div className="bg-amber-50/60 dark:bg-amber-900/30 p-3 rounded-xl border border-amber-200/80 dark:border-amber-800/60 space-y-2">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-semibold text-slate-700 dark:text-slate-300">Mức độ hài lòng:</span>
                       {renderStars(selectedAppointment.rating)}
