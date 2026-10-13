@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { authApi } from '../../api/authApi';
 
 export default function ChangePassword() {
   const { token } = useAuth();
