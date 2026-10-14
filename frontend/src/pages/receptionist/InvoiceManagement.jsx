@@ -109,6 +109,8 @@ export default function InvoiceManagement() {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isPayOpen, setIsPayOpen] = useState(false);
+  const [isConfirmDuplicateModalOpen, setIsConfirmDuplicateModalOpen] = useState(false);
+  const [existingInvoiceForRecord, setExistingInvoiceForRecord] = useState(null);
   const [payAmount, setPayAmount] = useState('');
   const [payMethod, setPayMethod] = useState('TIỀN MẶT');
   const [processingPay, setProcessingPay] = useState(false);
@@ -228,13 +230,8 @@ export default function InvoiceManagement() {
     return currentTabInvoices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [currentTabInvoices, currentPage]);
 
-  const handleCreateFromRecord = async (e) => {
-    e.preventDefault();
-    if (!recordIdInput) {
-      setError('Vui lòng chọn hoặc nhập Mã hồ sơ chưa lập hóa đơn.');
-      return;
-    }
-
+  // Hàm thực thi tạo hóa đơn thực tế
+  const executeCreateInvoice = async () => {
     setCreating(true);
     setError('');
     setSuccessMsg('');
@@ -247,11 +244,37 @@ export default function InvoiceManagement() {
       setSuccessMsg(`Đã lập thành công hóa đơn #${newInvoice?.id || ''} cho Hồ sơ #${recordIdInput}!`);
       setRecordIdInput('');
       setNoteInput('');
+      setIsConfirmDuplicateModalOpen(false); // Đóng modal xác nhận (nếu có)
       fetchData();
     } catch (err) {
       setError(err?.response?.data?.detail || err?.detail || 'Lỗi khi tạo hóa đơn từ hồ sơ.');
     } finally {
       setCreating(false);
+    }
+  };
+
+  // Hàm kiểm tra trước khi bấm Tạo hóa đơn
+  const handleCreateFromRecord = async (e) => {
+    e.preventDefault();
+    if (!recordIdInput) {
+      setError('Vui lòng chọn hoặc nhập Mã hồ sơ bệnh lý.');
+      return;
+    }
+
+    // Kiểm tra xem mã record nhập vào đã tồn tại trong danh sách hóa đơn hiện tại chưa
+    const foundExisting = invoices.find(
+      (inv) =>
+        String(inv.medical_record_id || inv.medicalRecordId || inv.record_id || inv.recordId || '') ===
+        String(recordIdInput).trim()
+    );
+
+    if (foundExisting) {
+      // Nếu đã từng được tạo hóa đơn -> Mở Modal xác nhận
+      setExistingInvoiceForRecord(foundExisting);
+      setIsConfirmDuplicateModalOpen(true);
+    } else {
+      // Chưa từng tạo -> Thực thi tạo hóa đơn trực tiếp
+      executeCreateInvoice();
     }
   };
 
@@ -806,6 +829,48 @@ export default function InvoiceManagement() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+	  
+	  {/* MODAL XÁC NHẬN TẠO HÓA ĐƠN CHO HỒ SƠ ĐÃ XUẤT HÓA ĐƠN */}
+      {isConfirmDuplicateModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/70 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-amber-600 dark:text-amber-400">
+              <span className="text-2xl">⚠️</span>
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                Hồ sơ đã xuất hóa đơn
+              </h3>
+            </div>
+
+            <div className="text-sm text-slate-600 dark:text-slate-300 space-y-2">
+              <p>
+                Hồ sơ bệnh lý <strong className="text-slate-800 dark:text-slate-100">#{recordIdInput}</strong> đã có hóa đơn <strong className="text-sky-600 dark:text-sky-400">#{existingInvoiceForRecord?.id}</strong> được tạo trước đó.
+              </p>
+              <p className="bg-amber-50 dark:bg-amber-950/40 p-3 rounded-xl border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-xs">
+                Bạn có chắc chắn muốn tiếp tục tạo thêm một hóa đơn mới cho hồ sơ bệnh lý này không?
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                disabled={creating}
+                onClick={() => setIsConfirmDuplicateModalOpen(false)}
+                className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl font-medium transition"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                disabled={creating}
+                onClick={executeCreateInvoice}
+                className="px-5 py-2 text-sm bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold transition shadow-md shadow-amber-600/20"
+              >
+                {creating ? '⏳ Đang tạo...' : 'Xác nhận tạo thêm'}
+              </button>
+            </div>
           </div>
         </div>
       )}
