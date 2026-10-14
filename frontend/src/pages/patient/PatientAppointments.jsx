@@ -1112,202 +1112,205 @@ const handleEditSubmit = async (e) => {
             ))}
           </div>
 		  
-		  <button
+		  {/* CỤM CÔNG CỤ BÊN PHẢI: GOM NÚT LÀM MỚI DỮ LIỆU & NÚT THÔNG BÁO VÀO CHUNG 1 DIV */}
+          <div className="flex items-center gap-2.5 self-end lg:self-auto shrink-0">
+            <button
               onClick={fetchData}
               disabled={loading}
               title="Làm mới dữ liệu"
               className="p-2.5 sm:px-4 sm:py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 transition-all flex items-center gap-2 disabled:opacity-50"
             >
               <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
-          </button>
-
-          <div className="relative self-end lg:self-auto">
-            <button
-              onClick={() => {
-                setIsNotifOpen(!isNotifOpen);
-                setHasUnreadNotif(false);
-              }}
-              title="Xem thông báo"
-              className={`p-2.5 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all ${
-                hasUnreadNotif
-                  ? 'bg-amber-500 text-white border-amber-600 animate-pulse shadow-md shadow-amber-500/30'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600'
-              }`}
-            >
-              <span>🔔</span>
-              <span className="hidden sm:inline">Thông báo</span>
-              {hasUnreadNotif && (
-                <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-              )}
             </button>
 
-            {isNotifOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 p-4 space-y-3">
-                <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2">
-                  <h4 className="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
-                    <span>🔔</span> Thông báo
-                  </h4>
-                  <button
-                    onClick={() => setIsNotifOpen(false)}
-                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-bold"
-                  >
-                    ✕
-                  </button>
-                </div>
+			  <div className="relative">
+				<button
+				  onClick={() => {
+					setIsNotifOpen(!isNotifOpen);
+					setHasUnreadNotif(false);
+				  }}
+				  title="Xem thông báo"
+				  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all ${
+					hasUnreadNotif
+					  ? 'bg-amber-500 text-white border-amber-600 animate-pulse shadow-md shadow-amber-500/30'
+					  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600'
+				  }`}
+				>
+				  <span>🔔</span>
+				  <span className="hidden sm:inline">Thông báo</span>
+				  {hasUnreadNotif && (
+					<span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+				  )}
+				</button>
 
-                <div className="flex border-b border-slate-200 dark:border-slate-700 gap-2">
-                  <button
-                    onClick={() => setNotifTab('changes')}
-                    className={`pb-2 px-2 text-xs font-semibold border-b-2 transition-all ${
-                      notifTab === 'changes'
-                        ? 'border-sky-600 text-sky-600 dark:text-sky-400'
-                        : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400'
-                    }`}
-                  >
-                    Thay đổi lịch ({changeNotifCount})
-                  </button>
-                  <button
-                    onClick={() => setNotifTab('reminders')}
-                    className={`pb-2 px-2 text-xs font-semibold border-b-2 transition-all ${
-                      notifTab === 'reminders'
-                        ? 'border-sky-600 text-sky-600 dark:text-sky-400'
-                        : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400'
-                    }`}
-                  >
-                    Nhắc lịch khám ({reminderNotifCount})
-                  </button>
-                </div>
+				{isNotifOpen && (
+				  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 p-4 space-y-3">
+					<div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2">
+					  <h4 className="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+						<span>🔔</span> Thông báo
+					  </h4>
+					  <button
+						onClick={() => setIsNotifOpen(false)}
+						className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-bold"
+					  >
+						✕
+					  </button>
+					</div>
 
-                {/* MODAL DANH SÁCH THÔNG BÁO VỚI THANH CUỘN DỌC */}
-                <div className="max-h-[380px] overflow-y-auto pr-1.5 space-y-2.5 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
-                  {notifTab === 'changes' ? (
-                    dbChangeNotifs.length === 0 && notifications.length === 0 ? (
-                      <p className="text-xs text-slate-400 dark:text-slate-400 italic text-center py-4">
-                        Chưa có thông báo hoặc thay đổi lịch hẹn nào mới.
-                      </p>
-                    ) : (
-                      <div className="space-y-2">
-                        {dbChangeNotifs.map((n) => (
-                          <div
-                            key={n.id}
-                            onClick={() => handleMarkAsRead(n)}
-                            className={`p-2.5 rounded-xl text-xs space-y-1 transition-all ${
-                              n.isRead
-                                ? 'bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 opacity-80'
-                                : 'bg-amber-50/90 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700/80 shadow-xs cursor-pointer'
-                            }`}
-                          >
-                            <div className="flex justify-between items-center font-bold text-amber-900 dark:text-amber-300">
-                              <span className="flex items-center gap-1.5">
-                                <span className="px-1.5 py-0.5 rounded text-[10px] bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300 font-semibold">
-                                  CSDL
-                                </span>
-                                <span>{n.title}</span>
-                              </span>
-                              <span className="text-[10px] text-amber-700 dark:text-amber-400 font-normal">
-                                {n.time} {n.date && `(${n.date})`}
-                              </span>
-                            </div>
-                            <p className="text-slate-700 dark:text-slate-300">{n.content}</p>
-                          </div>
-                        ))}
+					<div className="flex border-b border-slate-200 dark:border-slate-700 gap-2">
+					  <button
+						onClick={() => setNotifTab('changes')}
+						className={`pb-2 px-2 text-xs font-semibold border-b-2 transition-all ${
+						  notifTab === 'changes'
+							? 'border-sky-600 text-sky-600 dark:text-sky-400'
+							: 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400'
+						}`}
+					  >
+						Thay đổi lịch ({changeNotifCount})
+					  </button>
+					  <button
+						onClick={() => setNotifTab('reminders')}
+						className={`pb-2 px-2 text-xs font-semibold border-b-2 transition-all ${
+						  notifTab === 'reminders'
+							? 'border-sky-600 text-sky-600 dark:text-sky-400'
+							: 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400'
+						}`}
+					  >
+						Nhắc lịch khám ({reminderNotifCount})
+					  </button>
+					</div>
 
-                        {notifications.map((n) => (
-                          <div key={n.id} className="p-2.5 bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl text-xs space-y-1">
-                            <div className="flex justify-between font-bold text-amber-900 dark:text-amber-300">
-                              <span>{n.title}</span>
-                              <span className="text-[10px] text-amber-700 dark:text-amber-400 font-normal">{n.time}</span>
-                            </div>
-                            <p className="text-slate-700 dark:text-slate-300">{n.content}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )
-                  ) : (
-                    <div className="space-y-2.5 py-1">
-                      {dbReminderNotifs.length === 0 && aiReminders.length === 0 ? (
-                        <p className="text-xs text-slate-400 dark:text-slate-400 italic text-center py-4">
-                          Chưa có thông báo nhắc lịch khám nào.
-                        </p>
-                      ) : (
-                        <>
-                          {dbReminderNotifs.map((n) => (
-                            <div
-                              key={n.id}
-                              onClick={() => handleMarkAsRead(n)}
-                              className={`p-2.5 rounded-xl text-xs space-y-1 transition-all ${
-                                n.isRead
-                                  ? 'bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 opacity-80'
-                                  : 'bg-purple-50/90 dark:bg-purple-950/50 border border-purple-300 dark:border-purple-700/80 shadow-xs cursor-pointer'
-                              }`}
-                            >
-                              <div className="flex justify-between items-center font-bold text-purple-900 dark:text-purple-300">
-                                <span className="flex items-center gap-1.5">
-                                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300 font-semibold">
-                                    CSDL
-                                  </span>
-                                  <span>{n.title}</span>
-                                </span>
-                                <span className="text-[10px] text-purple-700 dark:text-purple-400 font-normal">
-                                  {n.time} {n.date && `(${n.date})`}
-                                </span>
-                              </div>
-                              <p className="text-slate-700 dark:text-slate-300">{n.content}</p>
-                            </div>
-                          ))}
+					{/* MODAL DANH SÁCH THÔNG BÁO VỚI THANH CUỘN DỌC */}
+					<div className="max-h-[380px] overflow-y-auto pr-1.5 space-y-2.5 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
+					  {notifTab === 'changes' ? (
+						dbChangeNotifs.length === 0 && notifications.length === 0 ? (
+						  <p className="text-xs text-slate-400 dark:text-slate-400 italic text-center py-4">
+							Chưa có thông báo hoặc thay đổi lịch hẹn nào mới.
+						  </p>
+						) : (
+						  <div className="space-y-2">
+							{dbChangeNotifs.map((n) => (
+							  <div
+								key={n.id}
+								onClick={() => handleMarkAsRead(n)}
+								className={`p-2.5 rounded-xl text-xs space-y-1 transition-all ${
+								  n.isRead
+									? 'bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 opacity-80'
+									: 'bg-amber-50/90 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700/80 shadow-xs cursor-pointer'
+								}`}
+							  >
+								<div className="flex justify-between items-center font-bold text-amber-900 dark:text-amber-300">
+								  <span className="flex items-center gap-1.5">
+									<span className="px-1.5 py-0.5 rounded text-[10px] bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300 font-semibold">
+									  CSDL
+									</span>
+									<span>{n.title}</span>
+								  </span>
+								  <span className="text-[10px] text-amber-700 dark:text-amber-400 font-normal">
+									{n.time} {n.date && `(${n.date})`}
+								  </span>
+								</div>
+								<p className="text-slate-700 dark:text-slate-300">{n.content}</p>
+							  </div>
+							))}
 
-                          {aiReminders.map((rem) => (
-                            <div
-                              key={rem.id || rem.timestamp}
-                              className="p-3 bg-purple-50/90 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 rounded-xl text-xs space-y-2 transition-all hover:shadow-sm"
-                            >
-                              <div className="flex justify-between items-start font-bold text-purple-900 dark:text-purple-300 gap-2">
-                                <span className="flex items-center gap-1.5">
-                                  <span>✨</span>
-                                  <span>{rem.title || 'Nhắc lịch tái khám AI'}</span>
-                                </span>
-                                <span className="text-[10px] text-purple-600 dark:text-purple-400 font-normal shrink-0">
-                                  {rem.time || (rem.timestamp ? new Date(rem.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '')}
-                                </span>
-                              </div>
+							{notifications.map((n) => (
+							  <div key={n.id} className="p-2.5 bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl text-xs space-y-1">
+								<div className="flex justify-between font-bold text-amber-900 dark:text-amber-300">
+								  <span>{n.title}</span>
+								  <span className="text-[10px] text-amber-700 dark:text-amber-400 font-normal">{n.time}</span>
+								</div>
+								<p className="text-slate-700 dark:text-slate-300">{n.content}</p>
+							  </div>
+							))}
+						  </div>
+						)
+					  ) : (
+						<div className="space-y-2.5 py-1">
+						  {dbReminderNotifs.length === 0 && aiReminders.length === 0 ? (
+							<p className="text-xs text-slate-400 dark:text-slate-400 italic text-center py-4">
+							  Chưa có thông báo nhắc lịch khám nào.
+							</p>
+						  ) : (
+							<>
+							  {dbReminderNotifs.map((n) => (
+								<div
+								  key={n.id}
+								  onClick={() => handleMarkAsRead(n)}
+								  className={`p-2.5 rounded-xl text-xs space-y-1 transition-all ${
+									n.isRead
+									  ? 'bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 opacity-80'
+									  : 'bg-purple-50/90 dark:bg-purple-950/50 border border-purple-300 dark:border-purple-700/80 shadow-xs cursor-pointer'
+								  }`}
+								>
+								  <div className="flex justify-between items-center font-bold text-purple-900 dark:text-purple-300">
+									<span className="flex items-center gap-1.5">
+									  <span className="px-1.5 py-0.5 rounded text-[10px] bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300 font-semibold">
+										CSDL
+									  </span>
+									  <span>{n.title}</span>
+									</span>
+									<span className="text-[10px] text-purple-700 dark:text-purple-400 font-normal">
+									  {n.time} {n.date && `(${n.date})`}
+									</span>
+								  </div>
+								  <p className="text-slate-700 dark:text-slate-300">{n.content}</p>
+								</div>
+							  ))}
 
-                              <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                                {rem.message || rem.content || rem.note}
-                              </p>
+							  {aiReminders.map((rem) => (
+								<div
+								  key={rem.id || rem.timestamp}
+								  className="p-3 bg-purple-50/90 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 rounded-xl text-xs space-y-2 transition-all hover:shadow-sm"
+								>
+								  <div className="flex justify-between items-start font-bold text-purple-900 dark:text-purple-300 gap-2">
+									<span className="flex items-center gap-1.5">
+									  <span>✨</span>
+									  <span>{rem.title || 'Nhắc lịch tái khám AI'}</span>
+									</span>
+									<span className="text-[10px] text-purple-600 dark:text-purple-400 font-normal shrink-0">
+									  {rem.time || (rem.timestamp ? new Date(rem.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '')}
+									</span>
+								  </div>
 
-                              <div className="flex justify-between items-center pt-1.5 border-t border-purple-200/60 dark:border-purple-800/40">
-                                <span className="text-[11px] font-medium text-purple-700 dark:text-purple-300">
-                                  {rem.doctor_name ? `Bs. ${rem.doctor_name}` : 'Phòng khám Nha khoa'}
-                                </span>
-                                <button
-                                  onClick={() => {
-                                    setIsNotifOpen(false);
-                                    setFormData({
-                                      patient_id: currentPatient?.id || '',
-                                      doctor_id: rem.doctor_id || '',
-                                      chair_id: '',
-                                      service_id: rem.service_id || '',
-                                      start_time: '',
-                                      end_time: '',
-                                      note: rem.suggested_note || `[Tái khám AI] ${rem.title || ''}`,
-                                    });
-                                    setIsCreateOpen(true);
-                                  }}
-                                  className="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[11px] font-semibold transition-all shadow-xs"
-                                >
-                                  📅 Đặt lịch ngay
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+								  <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+									{rem.message || rem.content || rem.note}
+								  </p>
+
+								  <div className="flex justify-between items-center pt-1.5 border-t border-purple-200/60 dark:border-purple-800/40">
+									<span className="text-[11px] font-medium text-purple-700 dark:text-purple-300">
+									  {rem.doctor_name ? `Bs. ${rem.doctor_name}` : 'Phòng khám Nha khoa'}
+									</span>
+									<button
+									  onClick={() => {
+										setIsNotifOpen(false);
+										setFormData({
+										  patient_id: currentPatient?.id || '',
+										  doctor_id: rem.doctor_id || '',
+										  chair_id: '',
+										  service_id: rem.service_id || '',
+										  start_time: '',
+										  end_time: '',
+										  note: rem.suggested_note || `[Tái khám AI] ${rem.title || ''}`,
+										});
+										setIsCreateOpen(true);
+									  }}
+									  className="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[11px] font-semibold transition-all shadow-xs"
+									>
+									  📅 Đặt lịch ngay
+									</button>
+								  </div>
+								</div>
+							  ))}
+							</>
+						  )}
+						</div>
+					  )}
+					</div>
+				  </div>
+				)}
+			  </div>
+		  </div>	  
         </div>
 
         {/* BẢNG DANH SÁCH LỊCH KHÁM */}
