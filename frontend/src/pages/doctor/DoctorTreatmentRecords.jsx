@@ -763,7 +763,7 @@ export default function DoctorTreatmentRecords() {
                 <span>🦷</span> Các dịch vụ thực hiện (Medical Record Details)
               </h4>
               {selectedRecord.details && selectedRecord.details.length > 0 ? (
-                <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+                <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="bg-slate-100 dark:bg-slate-900/80 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-700">

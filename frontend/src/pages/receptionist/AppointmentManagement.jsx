@@ -1524,6 +1524,15 @@ const handleEditSubmit = async (e) => {
                 <option value="90">90 ngày qua</option>
               </select>
             )}
+			
+			<button
+              onClick={fetchData}
+              disabled={loading}
+              title="Làm mới dữ liệu"
+              className="p-2.5 sm:px-4 sm:py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+            </button>
 
             <div className="relative">
               <button

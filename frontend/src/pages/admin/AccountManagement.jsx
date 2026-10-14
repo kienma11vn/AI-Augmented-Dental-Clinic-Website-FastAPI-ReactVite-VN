@@ -196,12 +196,26 @@ export default function AccountManagement() {
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Quản lý Tài khoản</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Danh sách tài khoản nhân viên, bác sĩ và bệnh nhân</p>
         </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="inline-flex items-center justify-center px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm"
-        >
-          + Tạo tài khoản mới
-        </button>
+		
+		{/* Cụm nút bấm thao tác nằm bên phải */}
+        <div className="flex items-center gap-3 shrink-0">
+			<button
+				onClick={fetchUsers}
+				disabled={loading}
+				title="Làm mới danh sách tài khoản"
+				className="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium text-sm rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+			  >
+				<span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+				<span>Làm mới dữ liệu</span>
+			</button>
+		
+			<button
+			  onClick={() => handleOpenModal()}
+			  className="inline-flex items-center justify-center px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm"
+			>
+			  + Tạo tài khoản mới
+			</button>
+		</div>
       </div>
 
       {/* Thanh tìm kiếm & lọc */}

@@ -127,12 +127,26 @@ export default function ServiceManagement() {
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Danh mục Dịch vụ Nha khoa</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">Quản lý và cập nhật các dịch vụ trực tiếp trong CSDL</p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all self-start md:self-auto"
-        >
-          ➕ Thêm Dịch vụ Mới
-        </button>
+		
+		{/* Cụm nút bấm thao tác nằm bên phải */}
+        <div className="flex items-center gap-3 shrink-0">
+			<button
+				onClick={fetchServices}
+				disabled={loading}
+				title="Làm mới dữ liệu"
+				className="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium text-sm rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+			  >
+				<span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+				<span>Làm mới dữ liệu</span>
+			</button>
+		
+			<button
+			  onClick={() => setShowAddModal(true)}
+			  className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all self-start md:self-auto"
+			>
+			  ➕ Thêm Dịch vụ Mới
+			</button>
+		</div>	
       </div>
 
       <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">

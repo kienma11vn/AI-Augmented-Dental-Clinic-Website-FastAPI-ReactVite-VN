@@ -276,15 +276,29 @@ export default function PatientManagement() {
             Tra cứu, xem hồ sơ bệnh lý và quản lý thông tin tài khoản người bệnh.
           </p>
         </div>
-        <button
-          onClick={() => {
-            resetForm();
-            setIsCreateModalOpen(true);
-          }}
-          className="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm flex items-center gap-2"
-        >
-          <span>➕</span> Thêm bệnh nhân mới
-        </button>
+
+        {/* Cụm chứa nút Làm mới dữ liệu và nút Thêm bệnh nhân mới */}
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-end shrink-0">
+          <button
+            onClick={fetchPatients}
+            disabled={loading}
+            title="Làm mới danh sách bệnh nhân"
+            className="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium text-sm rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+          >
+            <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+            <span>Làm mới dữ liệu</span>
+          </button>
+
+          <button
+            onClick={() => {
+              resetForm();
+              setIsCreateModalOpen(true);
+            }}
+            className="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm flex items-center gap-2"
+          >
+            <span>➕</span> Thêm bệnh nhân mới
+          </button>
+        </div>
       </div>
 
       {/* 2. THANH TÌM KIẾM (INPUT TEXT KÈM DROPLIST Ở GIỮA) */}

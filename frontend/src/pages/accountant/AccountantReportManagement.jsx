@@ -225,7 +225,7 @@ export default function AccountantReportManagement() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <select
             value={days}
             onChange={(e) => setDays(Number(e.target.value))}
@@ -251,6 +251,15 @@ export default function AccountantReportManagement() {
           >
             <span>📝</span> Xuất DOC Báo cáo
           </button>
+		  
+		  <button
+            onClick={fetchAccountantReportData}
+            disabled={loading}
+            title="Làm mới dữ liệu"
+            className="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition shadow-sm flex items-center gap-2 disabled:opacity-50"
+          >
+            <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+		  </button>	
         </div>
       </div>
 
@@ -269,7 +278,7 @@ export default function AccountantReportManagement() {
           </p>
         </div>
         <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
-          <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">Số lượt thanh toán</span>
+          <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">Lượt hoàn thành</span>
           <p className="text-2xl font-bold text-sky-600 dark:text-sky-400 mt-1">
             {loading ? '...' : overview?.completed_appointments || 0}
           </p>

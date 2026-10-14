@@ -368,7 +368,7 @@ export default function AccountantInvoiceManagement() {
           id: name,
           title: name,
           subTitle: [docId ? `Mã BS: #${docId}` : '', specialty ? `Chuyên khoa: ${specialty}` : ''].filter(Boolean).join(' | '),
-          displayText: docId ? `[Mã BS: #${docId}] ${name}` : name,
+          displayText: name,
         };
       });
     }
@@ -398,7 +398,7 @@ export default function AccountantInvoiceManagement() {
           id: name,
           title: name,
           subTitle: subTitle,
-          displayText: docId ? `[Mã BS: #${docId}] ${name}` : name,
+          displayText: name,
         });
       }
     });
@@ -619,9 +619,11 @@ export default function AccountantInvoiceManagement() {
 
           <button
             onClick={fetchData}
+			disabled={loading}
+			title="Làm mới dữ liệu"
             className="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-sm transition flex items-center gap-2"
           >
-            <span>🔄</span> Tải lại
+            <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
           </button>
         </div>
       </div>

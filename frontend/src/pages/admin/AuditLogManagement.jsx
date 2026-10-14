@@ -84,7 +84,7 @@ export default function AuditLogManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Header & Nút xuất file */}
+      {/* Header & Nút xuất file + làm mới */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Nhật ký Hệ thống (Audit Logs)</h2>
@@ -92,13 +92,26 @@ export default function AuditLogManagement() {
             Theo dõi tất cả thao tác API và sự thay đổi dữ liệu của người dùng trong hệ thống
           </p>
         </div>
-        <button
-          onClick={handleExportLogs}
-          disabled={exporting}
-          className="inline-flex items-center justify-center px-4 py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-medium text-sm rounded-xl transition-all shadow-sm disabled:opacity-50 gap-2 shrink-0"
-        >
-          {exporting ? 'Đang xuất file...' : '📥 Xuất File Log (Max 50k chars)'}
-        </button>
+		
+		{/* Cụm chứa nút Xuất File Log và nút Làm mới dữ liệu */}
+        <div className="flex items-center gap-3 shrink-0">
+			<button
+			  onClick={handleExportLogs}
+			  disabled={exporting}
+			  className="inline-flex items-center justify-center px-4 py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-medium text-sm rounded-xl transition-all shadow-sm disabled:opacity-50 gap-2 shrink-0"
+			>
+			  {exporting ? 'Đang xuất file...' : '📥 Xuất File Log (Max 50k chars)'}
+			</button>
+			
+			<button
+            onClick={fetchAuditLogs}
+            disabled={loading}
+            title="Làm mới nhật ký hệ thống"
+            className="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+          >
+            <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+          </button>
+		</div>	
       </div>
 
       {/* Thanh lọc & Tìm kiếm */}

@@ -346,7 +346,7 @@ export default function ReportManagement() {
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Tổng quan doanh thu, lượt khám bệnh và hiệu suất dịch vụ</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
           <select
             value={days}
             onChange={(e) => setDays(Number(e.target.value))}
@@ -372,6 +372,15 @@ export default function ReportManagement() {
           >
             <span>📝</span> Xuất DOC Báo cáo
           </button>
+		  
+		  <button
+            onClick={fetchReportData}
+            disabled={loading}
+            title="Làm mới dữ liệu"
+            className="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition shadow-sm flex items-center gap-2 disabled:opacity-50"
+          >
+            <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+		  </button>
         </div>
       </div>
 
