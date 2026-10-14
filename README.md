@@ -14,6 +14,8 @@
 
 <img width="1366" height="720" alt="image" src="https://github.com/user-attachments/assets/17da9f0c-5415-452f-8c39-27805cf7a0a3" />
 
+<img width="1366" height="720" alt="image" src="https://github.com/user-attachments/assets/43b2427b-4335-4639-8302-0194bbac4eb4" />
+
 ---
 
 ## 📌 TÍNH NĂNG NỔI BẬT & RÀNG BUỘC NGHIỆP VỤ
