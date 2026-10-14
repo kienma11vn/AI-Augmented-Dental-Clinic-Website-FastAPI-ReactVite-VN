@@ -517,7 +517,7 @@ export default function DoctorTreatmentRecords() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-x-hidden">
       <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
@@ -540,7 +540,7 @@ export default function DoctorTreatmentRecords() {
         </div>
       </div>
 
-      <div className="flex border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 pt-3 rounded-t-2xl shadow-sm overflow-x-auto w-full lg:w-auto">
+      <div className="flex border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 pt-3 rounded-t-2xl shadow-sm overflow-x-auto w-full max-w-full min-w-0 lg:w-auto">
         {[
           { id: 'today', label: 'Hôm nay', count: todayRecords.length, icon: '📅' },
           { id: '14days', label: 'Đang theo dõi (14 ngày)', count: records14Days.length, icon: '⏱️' },
@@ -551,7 +551,7 @@ export default function DoctorTreatmentRecords() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-5 py-3 border-b-2 font-medium text-sm transition-all ${
+              className={`flex items-center gap-2 px-5 py-3 border-b-2 font-medium text-sm transition-all shrink-0 whitespace-nowrap ${
                 isActive
                   ? 'border-sky-600 text-sky-600 dark:text-sky-400 bg-sky-50/50 dark:bg-sky-950/30 rounded-t-xl'
                   : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
