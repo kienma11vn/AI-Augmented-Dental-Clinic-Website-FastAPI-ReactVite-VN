@@ -261,6 +261,7 @@ class Invoice(Base):
     id = Column(Integer, primary_key=True, index=True)
     patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
     medical_record_id = Column(Integer, ForeignKey("medical_records.id"), nullable=True)
+    note = Column(Text, nullable=True)
     total_amount = Column(Numeric(12, 2), nullable=False)
     discount_amount = Column(Numeric(12, 2), default=0)
     discount_rate = Column(Numeric(5, 2), default=0)

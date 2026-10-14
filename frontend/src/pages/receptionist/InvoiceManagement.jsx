@@ -231,20 +231,30 @@ export default function InvoiceManagement() {
   }, [currentTabInvoices, currentPage]);
 
   // Hàm thực thi tạo hóa đơn thực tế
-  const executeCreateInvoice = async () => {
+const executeCreateInvoice = async (targetExistingInvoice = null) => {
     setCreating(true);
     setError('');
     setSuccessMsg('');
 
     try {
-      const payload = { note: noteInput };
+      let finalNote = noteInput.trim();
+
+      // Kiểm tra nếu hồ sơ đã có hóa đơn cũ trước đó -> Ghép thêm tiền tố ghi chú
+      const existing = targetExistingInvoice || existingInvoiceForRecord;
+      if (existing && existing.id) {
+        const prefix = `[Hóa đơn bổ sung từ hóa đơn #${existing.id}]`;
+        finalNote = finalNote ? `${prefix} ${finalNote}` : prefix;
+      }
+
+      const payload = { note: finalNote };
       const res = await invoiceApi.createInvoiceFromRecord(recordIdInput, payload);
       const newInvoice = res?.data || res;
 
       setSuccessMsg(`Đã lập thành công hóa đơn #${newInvoice?.id || ''} cho Hồ sơ #${recordIdInput}!`);
       setRecordIdInput('');
       setNoteInput('');
-      setIsConfirmDuplicateModalOpen(false); // Đóng modal xác nhận (nếu có)
+      setIsConfirmDuplicateModalOpen(false); // Đóng modal xác nhận
+      setExistingInvoiceForRecord(null); // Reset hóa đơn cũ
       fetchData();
     } catch (err) {
       setError(err?.response?.data?.detail || err?.detail || 'Lỗi khi tạo hóa đơn từ hồ sơ.');
@@ -254,7 +264,7 @@ export default function InvoiceManagement() {
   };
 
   // Hàm kiểm tra trước khi bấm Tạo hóa đơn
-  const handleCreateFromRecord = async (e) => {
+const handleCreateFromRecord = async (e) => {
     e.preventDefault();
     if (!recordIdInput) {
       setError('Vui lòng chọn hoặc nhập Mã hồ sơ bệnh lý.');
@@ -274,7 +284,8 @@ export default function InvoiceManagement() {
       setIsConfirmDuplicateModalOpen(true);
     } else {
       // Chưa từng tạo -> Thực thi tạo hóa đơn trực tiếp
-      executeCreateInvoice();
+      setExistingInvoiceForRecord(null);
+      executeCreateInvoice(null);
     }
   };
 
@@ -625,6 +636,13 @@ export default function InvoiceManagement() {
                   <span className="text-slate-500 dark:text-slate-400">Mã chương trình giảm giá:</span>
                   <span className="font-semibold text-amber-700 dark:text-amber-400">{selectedInvoice.discount_code || 'Không có'}</span>
                 </div>
+				{/* KHỐI HIỂN THỊ GHI CHÚ HÓA ĐƠN */}
+                {selectedInvoice.note && (
+                  <div className="flex justify-between border-t border-slate-200 dark:border-slate-700/60 pt-2 mt-1">
+                    <span className="text-slate-500 dark:text-slate-400">Ghi chú bổ sung:</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-200 italic">{selectedInvoice.note || 'Không có'}</span>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -865,8 +883,8 @@ export default function InvoiceManagement() {
               <button
                 type="button"
                 disabled={creating}
-                onClick={executeCreateInvoice}
-                className="px-5 py-2 text-sm bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold transition shadow-md shadow-amber-600/20"
+                onClick={() => executeCreateInvoice(existingInvoiceForRecord)}
+                className="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold transition shadow-md shadow-amber-600/20"
               >
                 {creating ? '⏳ Đang tạo...' : 'Xác nhận tạo thêm'}
               </button>

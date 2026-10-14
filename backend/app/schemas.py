@@ -286,6 +286,7 @@ class MedicalRecordOut(MedicalRecordBase):
 class InvoiceBase(BaseModel):
     patient_id: int
     medical_record_id: Optional[int] = None
+    note: Optional[str] = None
     total_amount: Decimal
     discount_amount: Decimal = Decimal("0")
     discount_rate: Decimal = Decimal("0")
@@ -325,6 +326,7 @@ class InvoiceCreate(BaseModel):
 
 
 class InvoiceFromRecordCreate(BaseModel):
+    note: Optional[str] = None
     discount_amount: Optional[Decimal] = Decimal("0")
     discount_rate: Optional[Decimal] = Decimal("0")
     discount_code: Optional[str] = None

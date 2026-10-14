@@ -2215,6 +2215,13 @@ const handleEditSubmit = async (e) => {
                       {selectedInvoice.discount_code || 'Không có'}
                     </span>
                   </div>
+				  {/* KHỐI HIỂN THỊ GHI CHÚ HÓA ĐƠN */}
+					{selectedInvoice.note && (
+					  <div className="flex justify-between border-t border-slate-200 dark:border-slate-700/60 pt-2 mt-1">
+						<span className="text-slate-500 dark:text-slate-400">Ghi chú bổ sung:</span>
+						<span className="font-medium text-slate-700 dark:text-slate-200 italic">{selectedInvoice.note || 'Không có'}</span>
+					  </div>
+					)}
                 </div>
 
                 <div>

@@ -15,7 +15,7 @@ class Role(str, Enum):
 PERMISSIONS = {
     "patient:read": [Role.ADMIN, Role.RECEPTIONIST, Role.DOCTOR, Role.ACCOUNTANT, Role.PATIENT],
     "patient:write": [Role.ADMIN, Role.RECEPTIONIST, Role.PATIENT],
-    "doctor:read": [Role.ADMIN, Role.RECEPTIONIST, Role.DOCTOR, Role.PATIENT],
+    "doctor:read": [Role.ADMIN, Role.RECEPTIONIST, Role.DOCTOR, Role.PATIENT, Role.ACCOUNTANT],
     "doctor:write": [Role.ADMIN],
     "appointment:read": [Role.ADMIN, Role.RECEPTIONIST, Role.DOCTOR, Role.ACCOUNTANT, Role.PATIENT],
     "appointment:write": [Role.ADMIN, Role.RECEPTIONIST, Role.DOCTOR, Role.PATIENT],
@@ -26,7 +26,7 @@ PERMISSIONS = {
     "invoice:read": [Role.ADMIN, Role.RECEPTIONIST, Role.ACCOUNTANT, Role.PATIENT, Role.DOCTOR],
     "invoice:write": [Role.ADMIN, Role.RECEPTIONIST, Role.ACCOUNTANT],
     "report:read": [Role.ADMIN, Role.RECEPTIONIST, Role.ACCOUNTANT],
-    "ai:use": [Role.ADMIN, Role.RECEPTIONIST, Role.DOCTOR, Role.PATIENT],
+    "ai:use": [Role.ADMIN, Role.RECEPTIONIST, Role.DOCTOR, Role.PATIENT, Role.ACCOUNTANT],
     "user:read": [Role.ADMIN, Role.RECEPTIONIST, Role.PATIENT],
     "user:write": [Role.ADMIN, Role.RECEPTIONIST, Role.PATIENT],
     "user:manage": [Role.ADMIN, Role.RECEPTIONIST],

@@ -93,12 +93,14 @@ def create_invoice_from_record(record_id: int, payload: Optional[schemas.Invoice
     if payload:
         disc_amount, disc_rate, final = _calculate_discount(total, payload.discount_amount, payload.discount_rate)
         disc_code, disc_reason, pay_method = payload.discount_code, payload.discount_reason, payload.payment_method
+        note = payload.note
     else:
         final = total
 
     invoice = models.Invoice(
         patient_id=record.patient_id,
         medical_record_id=record.id,
+        note=note,
         total_amount=total,
         discount_amount=disc_amount,
         discount_rate=disc_rate,
