@@ -1,2 +1,4 @@
 seed_patients.py
 seed_staff.py
+seed_services.py
+seed_discounts.py
