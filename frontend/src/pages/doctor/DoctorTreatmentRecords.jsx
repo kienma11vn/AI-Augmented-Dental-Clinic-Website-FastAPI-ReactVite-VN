@@ -573,7 +573,7 @@ export default function DoctorTreatmentRecords() {
         })}
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-b-2xl shadow-sm border border-slate-200/80 dark:border-slate-700 overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-b-2xl shadow-sm border border-slate-200/80 dark:border-slate-700 overflow-x-auto w-full lg:w-auto">
         {loading ? (
           <div className="p-12 text-center text-slate-500 dark:text-slate-400">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-sky-600 border-t-transparent mb-2"></div>

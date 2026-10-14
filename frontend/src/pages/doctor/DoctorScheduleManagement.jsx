@@ -573,7 +573,7 @@ export default function DoctorScheduleManagement() {
     e.preventDefault();
     if (!selectedAppointment) return;
 
-    const { follow_up_date, follow_up_time, chair_id } = recordFormData;
+    const { follow_up_service_id, follow_up_date, follow_up_time, chair_id } = recordFormData;
     const hasAnyFollowUp = follow_up_service_id || follow_up_date || follow_up_time || chair_id;
     const hasAllFollowUp = follow_up_service_id && follow_up_date && follow_up_time && chair_id;
 

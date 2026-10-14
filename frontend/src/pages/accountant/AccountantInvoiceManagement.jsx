@@ -632,7 +632,7 @@ export default function AccountantInvoiceManagement() {
       {/* DANH SÁCH HÓA ĐƠN & TABS CÓ BADGE SỐ LƯỢNG */}
       <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-5 space-y-4 transition-colors">
         <div className="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0">
             {[
               { id: 'all', label: 'Tất cả' },
               { id: 'today', label: 'Hôm nay' },
@@ -1062,7 +1062,7 @@ export default function AccountantInvoiceManagement() {
 
               <div>
                 <h4 className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-2">Chi tiết Dịch vụ Nha khoa</h4>
-                <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden text-xs">
+                <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto text-xs">
                   <table className="w-full text-left">
                     <thead className="bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
                       <tr>
