@@ -901,8 +901,9 @@ export default function DoctorScheduleManagement() {
                   ? 'bg-amber-500 text-white border-amber-600 animate-pulse shadow-md shadow-amber-500/30'
                   : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
-            >              
-              <span className="hidden md:inline">🔔 Thông báo</span>
+            > 
+			  <span>🔔</span>
+              <span className="hidden md:inline">Thông báo</span>
               {hasUnreadNotif && (
                 <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
               )}
