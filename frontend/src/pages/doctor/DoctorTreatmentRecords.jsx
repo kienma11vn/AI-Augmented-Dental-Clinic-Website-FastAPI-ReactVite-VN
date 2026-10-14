@@ -540,7 +540,7 @@ export default function DoctorTreatmentRecords() {
         </div>
       </div>
 
-      <div className="flex border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 pt-3 rounded-t-2xl shadow-sm">
+      <div className="flex border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 pt-3 rounded-t-2xl shadow-sm overflow-x-auto w-full lg:w-auto">
         {[
           { id: 'today', label: 'Hôm nay', count: todayRecords.length, icon: '📅' },
           { id: '14days', label: 'Đang theo dõi (14 ngày)', count: records14Days.length, icon: '⏱️' },
