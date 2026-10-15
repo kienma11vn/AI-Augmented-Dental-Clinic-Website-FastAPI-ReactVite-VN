@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useIdleRefresh } from '../../utils/useIdleRefresh';
+import { getPaginationRange } from '../../utils/pagination';
 import invoiceApi from '../../api/invoiceApi';
 import medicalRecordApi from '../../api/medicalRecordApi';
 import discountProgramsApi from '../../api/discountProgramsApi';
@@ -430,7 +431,7 @@ const handleCreateFromRecord = async (e) => {
             disabled={creating || !recordIdInput}
             className="w-full md:w-auto px-6 py-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm rounded-lg transition disabled:opacity-50 whitespace-nowrap shadow-sm shadow-sky-600/20"
           >
-            {creating ? '⏳ Đang tạo...' : '➕ Tạo hóa đơn'}
+            {creating ? '⏳ Đang tạo...' : '+ Tạo hóa đơn'}
           </button>
         </form>
       </div>
@@ -572,41 +573,74 @@ const handleCreateFromRecord = async (e) => {
           </table>
         </div>
 
-        {currentTabInvoices.length > 0 && (
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700 px-2">
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Hiển thị <span className="font-semibold text-slate-700 dark:text-slate-200">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> -{' '}
-              <span className="font-semibold text-slate-700 dark:text-slate-200">{Math.min(currentPage * ITEMS_PER_PAGE, currentTabInvoices.length)}</span> trên tổng số{' '}
-              <span className="font-semibold text-slate-700 dark:text-slate-200">{currentTabInvoices.length}</span> hóa đơn
-            </div>
+		{/* CỤM THANH PHÂN TRANG */}
+		{currentTabInvoices.length > 0 && (
+		  <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700 px-2">
+			<div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+			  Hiển thị{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{(currentPage - 1) * ITEMS_PER_PAGE + 1}
+			  </span>{' '}
+			  -{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{Math.min(currentPage * ITEMS_PER_PAGE, currentTabInvoices.length)}
+			  </span>{' '}
+			  trên tổng số{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{currentTabInvoices.length}
+			  </span>{' '}
+			  hóa đơn
+			</div>
 
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 transition"
-              >
-                ◀ Trang trước
-              </button>
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNum) => (
-                <button
-                  key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
-                  className={`w-8 h-8 rounded-xl text-xs font-bold transition ${currentPage === pageNum ? 'bg-sky-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
-                >
-                  {pageNum}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage >= totalPages}
-                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 transition"
-              >
-                Trang sau ▶
-              </button>
-            </div>
-          </div>
-        )}
+			<div className="flex items-center gap-1.5">
+			  {/* Nút Trang trước */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+				disabled={currentPage === 1}
+				className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 transition"
+			  >
+				◀ Trang trước
+			  </button>
+
+			  {/* Hiển thị danh sách nút số trang rút gọn */}
+			  {getPaginationRange(currentPage, totalPages).map((page, index) => {
+				if (page === '...') {
+				  return (
+					<span
+					  key={`dots-${index}`}
+					  className="px-2 py-1.5 text-xs text-slate-400 dark:text-slate-500 select-none font-semibold"
+					>
+					  ...
+					</span>
+				  );
+				}
+
+				return (
+				  <button
+					key={page}
+					onClick={() => setCurrentPage(page)}
+					className={`w-8 h-8 rounded-xl text-xs font-bold transition ${
+					  currentPage === page
+						? 'bg-sky-600 text-white shadow-sm'
+						: 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+					}`}
+				  >
+					{page}
+				  </button>
+				);
+			  })}
+
+			  {/* Nút Trang sau */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+				disabled={currentPage >= totalPages}
+				className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 transition"
+			  >
+				Trang sau ▶
+			  </button>
+			</div>
+		  </div>
+		)}
       </div>
 
       {/* MODAL 1: CHI TIẾT HÓA ĐƠN */}

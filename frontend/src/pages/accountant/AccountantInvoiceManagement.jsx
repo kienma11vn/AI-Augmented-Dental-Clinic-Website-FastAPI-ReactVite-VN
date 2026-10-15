@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useIdleRefresh } from '../../utils/useIdleRefresh';
+import { getPaginationRange } from '../../utils/pagination';
 import invoiceApi from '../../api/invoiceApi';
 import discountProgramsApi from '../../api/discountProgramsApi';
 import medicalRecordApi from '../../api/medicalRecordApi';
@@ -765,29 +766,75 @@ export default function AccountantInvoiceManagement() {
         </div>
 
         {/* PHÂN TRANG */}
-        {filteredInvoices.length > 0 && (
-          <div className="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
-            <span>
-              Trang {currentPage} / {totalPages} (Tổng {filteredInvoices.length} hóa đơn)
-            </span>
-            <div className="flex gap-1.5">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 transition"
-              >
-                ◀ Trước
-              </button>
-              <button
-                disabled={currentPage >= totalPages}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 transition"
-              >
-                Sau ▶
-              </button>
-            </div>
-          </div>
-        )}
+		{filteredInvoices.length > 0 && (
+		  <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+			<div>
+			  Hiển thị{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{(currentPage - 1) * ITEMS_PER_PAGE + 1}
+			  </span>{' '}
+			  -{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{Math.min(currentPage * ITEMS_PER_PAGE, filteredInvoices.length)}
+			  </span>{' '}
+			  trên tổng số{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{filteredInvoices.length}
+			  </span>{' '}
+			  hóa đơn
+			</div>
+
+			<div className="flex items-center gap-1.5">
+			  {/* Nút Trước */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+				disabled={currentPage === 1}
+				className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
+			  >
+				◀ Trang trước
+			  </button>
+
+			  {/* Danh sách nút số trang rút gọn */}
+			  <div className="flex items-center gap-1">
+				{getPaginationRange(currentPage, totalPages).map((page, index) => {
+				  if (page === '...') {
+					return (
+					  <span
+						key={`dots-${index}`}
+						className="px-2 py-1 text-xs text-slate-400 dark:text-slate-500 select-none font-semibold"
+					  >
+						...
+					  </span>
+					);
+				  }
+
+				  return (
+					<button
+					  key={page}
+					  onClick={() => setCurrentPage(page)}
+					  className={`w-8 h-8 rounded-xl text-xs font-bold transition ${
+						currentPage === page
+						  ? 'bg-sky-600 text-white shadow-sm'
+						  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+					  }`}
+					>
+					  {page}
+					</button>
+				  );
+				})}
+			  </div>
+
+			  {/* Nút Sau */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+				disabled={currentPage >= totalPages}
+				className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
+			  >
+				Trang sau ▶
+			  </button>
+			</div>
+		  </div>
+		)}
       </div>
 
       {/* MODAL 1: TÌM KIẾM NÂNG CAO */}

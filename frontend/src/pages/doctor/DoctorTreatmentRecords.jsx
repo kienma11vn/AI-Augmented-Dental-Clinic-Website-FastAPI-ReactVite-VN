@@ -499,7 +499,7 @@ export default function DoctorTreatmentRecords() {
             disabled={page === 1}
             className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm text-slate-700 dark:text-slate-200"
           >
-            Trang trước
+            ◀ Trang trước
           </button>
           <span className="text-xs font-bold px-2">
             Trang {page} / {totalPages}
@@ -509,7 +509,7 @@ export default function DoctorTreatmentRecords() {
             disabled={page === totalPages}
             className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm text-slate-700 dark:text-slate-200"
           >
-            Trang sau
+            Trang sau ▶
           </button>
         </div>
       </div>

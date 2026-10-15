@@ -341,14 +341,14 @@ export default function AccountantReportManagement() {
                   onClick={() => setServicesPage((prev) => prev - 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40"
                 >
-                  Trước
+                  ◀ Trang trước
                 </button>
                 <button
                   disabled={servicesPage === totalServicesPages}
                   onClick={() => setServicesPage((prev) => prev + 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40"
                 >
-                  Sau
+                  Trang sau ▶
                 </button>
               </div>
             </div>
@@ -448,14 +448,14 @@ export default function AccountantReportManagement() {
                   onClick={() => setInvoicesPage((prev) => prev - 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40"
                 >
-                  Trước
+                  ◀ Trang trước
                 </button>
                 <button
                   disabled={invoicesPage === totalInvoicesPages}
                   onClick={() => setInvoicesPage((prev) => prev + 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40"
                 >
-                  Sau
+                  Trang sau ▶
                 </button>
               </div>
             </div>

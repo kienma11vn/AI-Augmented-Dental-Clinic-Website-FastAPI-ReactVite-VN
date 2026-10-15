@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useIdleRefresh } from '../../utils/useIdleRefresh';
+import { getPaginationRange } from '../../utils/pagination';
 import appointmentApi from '../../api/appointmentApi';
 import medicalRecordApi from '../../api/medicalRecordApi';
 import notificationApi from '../../api/notificationApi';
@@ -754,8 +755,6 @@ export default function DoctorScheduleManagement() {
 	  if (followUpApt) {
 		const chairObj = chairs.find((c) => String(c.id) === String(followUpApt.chair_id));
 		chairName = followUpApt.chair?.name || chairObj?.name || (followUpApt.chair_id ? `Ghế #${followUpApt.chair_id}` : 'Chưa xếp ghế');
-	  } else if (apt.chair) {
-		chairName = apt.chair.name;
 	  }
 
 	  // 4. Lấy tên Dịch vụ tái khám bằng hàm phân tách parseAppointmentDetails
@@ -776,37 +775,77 @@ export default function DoctorScheduleManagement() {
 	  setIsFollowUpModalOpen(true);
 	};
 
-  const renderPagination = (totalItems, currentPage, setPage) => {
-    const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
-    if (totalItems === 0) return null;
+	const renderPagination = (totalItems, currentPage, setPage) => {
+	  const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
+	  if (totalItems === 0) return null;
 
-    return (
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-600 dark:text-slate-400 mt-4">
-        <div>
-          Hiển thị <strong className="text-slate-900 dark:text-white">{(currentPage - 1) * PAGE_SIZE + 1}</strong> - <strong className="text-slate-900 dark:text-white">{Math.min(currentPage * PAGE_SIZE, totalItems)}</strong> trên tổng số <strong className="text-slate-900 dark:text-white">{totalItems}</strong> bản ghi
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            disabled={currentPage === 1}
-            className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
-          >
-            Trang trước
-          </button>
-          <span className="text-xs font-bold px-2 text-slate-700 dark:text-slate-300">
-            Trang {currentPage} / {totalPages}
-          </span>
-          <button
-            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
-          >
-            Trang sau
-          </button>
-        </div>
-      </div>
-    );
-  };
+	  return (
+		<div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 mt-4">
+		  <div>
+			Hiển thị{' '}
+			<strong className="text-slate-900 dark:text-white">
+			  {(currentPage - 1) * PAGE_SIZE + 1}
+			</strong>{' '}
+			-{' '}
+			<strong className="text-slate-900 dark:text-white">
+			  {Math.min(currentPage * PAGE_SIZE, totalItems)}
+			</strong>{' '}
+			trên tổng số{' '}
+			<strong className="text-slate-900 dark:text-white">{totalItems}</strong> bản ghi
+		  </div>
+
+		  <div className="flex items-center gap-1.5">
+			{/* Nút Trang trước */}
+			<button
+			  onClick={() => setPage((p) => Math.max(p - 1, 1))}
+			  disabled={currentPage === 1}
+			  className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
+			>
+			  ◀ Trang trước
+			</button>
+
+			{/* Danh sách các nút số trang rút gọn */}
+			<div className="flex items-center gap-1">
+			  {getPaginationRange(currentPage, totalPages).map((page, index) => {
+				if (page === '...') {
+				  return (
+					<span
+					  key={`dots-${index}`}
+					  className="px-2 py-1 text-xs text-slate-400 dark:text-slate-500 select-none font-semibold"
+					>
+					  ...
+					</span>
+				  );
+				}
+
+				return (
+				  <button
+					key={page}
+					onClick={() => setPage(page)}
+					className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${
+					  currentPage === page
+						? 'bg-sky-600 text-white shadow-sm'
+						: 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+					}`}
+				  >
+					{page}
+				  </button>
+				);
+			  })}
+			</div>
+
+			{/* Nút Trang sau */}
+			<button
+			  onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+			  disabled={currentPage >= totalPages}
+			  className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
+			>
+			  Trang sau ▶
+			</button>
+		  </div>
+		</div>
+	  );
+	};
 
   return (
     <div className="space-y-6">

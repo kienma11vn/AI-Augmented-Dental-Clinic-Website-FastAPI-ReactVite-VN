@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useIdleRefresh } from '../../utils/useIdleRefresh';
+import { getPaginationRange } from '../../utils/pagination';
 import { patientApi } from '../../api/patientApi';
 
 export default function PatientManagement() {
@@ -296,7 +297,7 @@ export default function PatientManagement() {
             }}
             className="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-medium text-sm rounded-xl transition-all shadow-sm flex items-center gap-2"
           >
-            <span>➕</span> Thêm bệnh nhân mới
+            <span>+</span> Thêm bệnh nhân mới
           </button>
         </div>
       </div>
@@ -419,49 +420,65 @@ export default function PatientManagement() {
         </table>
 
         {/* PHÂN TRANG */}
-        {!loading && filteredPatients.length > 0 && (
-          <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-slate-600 dark:text-slate-400">
-            <div>
-              Hiển thị <span className="font-semibold text-slate-800 dark:text-white">{startIndex + 1}</span> đến{' '}
-              <span className="font-semibold text-slate-800 dark:text-white">
-                {Math.min(startIndex + itemsPerPage, filteredPatients.length)}
-              </span>{' '}
-              trong tổng số <span className="font-semibold text-slate-800 dark:text-white">{filteredPatients.length}</span> bệnh nhân
-            </div>
+		{!loading && filteredPatients.length > 0 && (
+		  <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-slate-600 dark:text-slate-400">
+			<div>
+			  Hiển thị <span className="font-semibold text-slate-800 dark:text-white">{startIndex + 1}</span> đến{' '}
+			  <span className="font-semibold text-slate-800 dark:text-white">
+				{Math.min(startIndex + itemsPerPage, filteredPatients.length)}
+			  </span>{' '}
+			  trong tổng số <span className="font-semibold text-slate-800 dark:text-white">{filteredPatients.length}</span> bệnh nhân
+			</div>
 
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium transition-all"
-              >
-                Trước
-              </button>
+			<div className="flex items-center gap-1">
+			  {/* Nút Trước */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+				disabled={currentPage === 1}
+				className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium transition-all"
+			  >
+				◀ Trang trước
+			  </button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    currentPage === page
-                      ? 'bg-sky-600 text-white'
-                      : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
+			  {/* Danh sách các nút số trang đã được xử lý rút gọn */}
+			  {getPaginationRange(currentPage, totalPages).map((page, index) => {
+				if (page === '...') {
+				  return (
+					<span
+					  key={`dots-${index}`}
+					  className="px-2 py-1.5 text-xs text-slate-400 dark:text-slate-500 select-none font-semibold"
+					>
+					  ...
+					</span>
+				  );
+				}
 
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium transition-all"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
-        )}
+				return (
+				  <button
+					key={page}
+					onClick={() => setCurrentPage(page)}
+					className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+					  currentPage === page
+						? 'bg-sky-600 text-white'
+						: 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
+					}`}
+				  >
+					{page}
+				  </button>
+				);
+			  })}
+
+			  {/* Nút Sau */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+				disabled={currentPage === totalPages}
+				className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium transition-all"
+			  >
+				Trang sau ▶
+			  </button>
+			</div>
+		  </div>
+		)}
       </div>
 
       {/* MODAL 1: THÊM BỆNH NHÂN MỚI */}

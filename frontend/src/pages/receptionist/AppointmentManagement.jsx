@@ -5,6 +5,7 @@ import aiApi from '../../api/aiApi';
 import notificationApi from '../../api/notificationApi';
 import { useLanguage } from '../../context/LanguageContext';
 import { useIdleRefresh } from '../../utils/useIdleRefresh';
+import { getPaginationRange } from '../../utils/pagination';
 
 const AppointmentItem = ({ status }) => {
   const { formatAppointmentStatus } = useLanguage();
@@ -1401,7 +1402,7 @@ const handleEditSubmit = async (e) => {
             }}
             className="flex-1 md:flex-initial px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-sky-600/20"
           >
-            ➕ Đặt lịch khám mới
+            + Đặt lịch khám mới
           </button>
 
           <button
@@ -1801,59 +1802,75 @@ const handleEditSubmit = async (e) => {
         </div>
 
         {/* CỤM THANH PHÂN TRANG */}
-        {currentTabAppointments.length > 0 && (
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700 mt-4 px-2">
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Hiển thị{' '}
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
-                {(currentPage - 1) * ITEMS_PER_PAGE + 1}
-              </span>{' '}
-              -{' '}
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
-                {Math.min(currentPage * ITEMS_PER_PAGE, currentTabAppointments.length)}
-              </span>{' '}
-              trên tổng số{' '}
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
-                {currentTabAppointments.length}
-              </span>{' '}
-              bản ghi
-            </div>
+		{currentTabAppointments.length > 0 && (
+		  <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700 mt-4 px-2">
+			<div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+			  Hiển thị{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{(currentPage - 1) * ITEMS_PER_PAGE + 1}
+			  </span>{' '}
+			  -{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{Math.min(currentPage * ITEMS_PER_PAGE, currentTabAppointments.length)}
+			  </span>{' '}
+			  trên tổng số{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{currentTabAppointments.length}
+			  </span>{' '}
+			  bản ghi
+			</div>
 
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-              >
-                ◀ Trang trước
-              </button>
+			<div className="flex items-center gap-1.5">
+			  {/* Nút Trang trước */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+				disabled={currentPage === 1}
+				className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+			  >
+				◀ Trang trước
+			  </button>
 
-              <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNum) => (
-                  <button
-                    key={pageNum}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${
-                      currentPage === pageNum
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                ))}
-              </div>
+			  {/* Hiển thị danh sách nút số trang rút gọn */}
+			  <div className="flex items-center gap-1">
+				{getPaginationRange(currentPage, totalPages).map((page, index) => {
+				  if (page === '...') {
+					return (
+					  <span
+						key={`dots-${index}`}
+						className="px-2 py-1 text-xs text-slate-400 dark:text-slate-500 select-none font-semibold"
+					  >
+						...
+					  </span>
+					);
+				  }
 
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage >= totalPages}
-                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-              >
-                Trang sau ▶
-              </button>
-            </div>
-          </div>
-        )}
+				  return (
+					<button
+					  key={page}
+					  onClick={() => setCurrentPage(page)}
+					  className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${
+						currentPage === page
+						  ? 'bg-sky-600 text-white shadow-sm'
+						  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+					  }`}
+					>
+					  {page}
+					</button>
+				  );
+				})}
+			  </div>
+
+			  {/* Nút Trang sau */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+				disabled={currentPage >= totalPages}
+				className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+			  >
+				Trang sau ▶
+			  </button>
+			</div>
+		  </div>
+		)}
       </div>
 
       {/* MODAL SINH TIN NHẮN NHẮC LỊCH KHÁM AI */}

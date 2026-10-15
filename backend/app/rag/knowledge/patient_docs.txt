@@ -71,7 +71,7 @@ B. QUY TẮC NGHIỆP VỤ & RÀNG BUỘC THỜI GIAN:
 
 C. CÁC THAO TÁC CƠ BẢN:
 1. Đặt lịch khám mới:
-   - Nhấn nút "➕ Đặt lịch khám mới".
+   - Nhấn nút "+ Đặt lịch khám mới".
    - Trong Modal, chọn Bác sĩ phụ trách (*), Ghế khám (*), Dịch vụ khám (*), Ngày khám (*), Khung giờ bắt đầu (*).
    - Tiện ích AI: Nhấn nút "🤖 Giải thích dịch vụ bằng AI" để Gemini AI phân tích và đưa ra giải thích chi tiết về gói dịch vụ đã chọn.
    - Nhập Ghi chú bổ sung (nếu có) và nhấn "Xác nhận đặt lịch". Lịch tạo thành công sẽ ở trạng thái Chờ phòng khám xác nhận (scheduled).

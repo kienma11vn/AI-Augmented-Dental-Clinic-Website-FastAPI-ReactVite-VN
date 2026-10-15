@@ -173,3 +173,7 @@ A4: Màn hình sẽ báo lỗi 403 Truy cập bị từ chối do tài khoản c
 
 Q5: Mật khẩu mới có yêu cầu gì không?
 A5: Mật khẩu mới bắt buộc phải có ít nhất 6 ký tự, nhập lại xác nhận chính xác và không trùng với mật khẩu hiện tại (khi thực hiện đổi mật khẩu).
+
+Q6: Làm thế nào để làm mới (refresh) dữ liệu hiển thị?
+A6: Nếu trong giao diện có nút "🔄" thì nhấn vào để làm mới và tải lại dữ liệu hiển thị trên hệ thống.
+================================================================================

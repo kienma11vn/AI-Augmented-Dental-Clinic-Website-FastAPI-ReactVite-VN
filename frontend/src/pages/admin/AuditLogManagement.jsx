@@ -266,14 +266,14 @@ export default function AuditLogManagement() {
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
             >
-              Trang trước
+              ◀ Trang trước
             </button>
             <button
               disabled={!Array.isArray(logs) || logs.length < limit}
               onClick={() => setPage((p) => p + 1)}
               className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
             >
-              Trang sau
+              Trang sau ▶
             </button>
           </div>
         </div>

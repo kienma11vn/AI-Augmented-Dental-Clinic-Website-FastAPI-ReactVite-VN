@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useIdleRefresh } from '../../utils/useIdleRefresh';
+import { getPaginationRange } from '../../utils/pagination';
 import { serviceApi } from '../../api/serviceApi';
 
 export default function ServiceManagement() {
@@ -144,7 +145,7 @@ export default function ServiceManagement() {
 			  onClick={() => setShowAddModal(true)}
 			  className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all self-start md:self-auto"
 			>
-			  ➕ Thêm Dịch vụ Mới
+			  + Thêm Dịch vụ Mới
 			</button>
 		</div>	
       </div>
@@ -235,46 +236,67 @@ export default function ServiceManagement() {
         </div>
 
         {/* Thanh Phân trang (Pagination) */}
-        {!loading && filteredServices.length > 0 && (
-          <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-slate-500 dark:text-slate-400">
-              Hiển thị <span className="font-semibold text-slate-700 dark:text-slate-200">{startIndex + 1}</span> -{' '}
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
-                {Math.min(startIndex + itemsPerPage, filteredServices.length)}
-              </span>{' '}
-              trên <span className="font-semibold text-slate-700 dark:text-slate-200">{filteredServices.length}</span> bản ghi
-            </div>
-            <div className="flex items-center space-x-1">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 rounded-lg border text-xs font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                ◀ Trước
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    currentPage === page
-                      ? 'bg-sky-600 text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages || totalPages === 0}
-                className="px-3 py-1.5 rounded-lg border text-xs font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Sau ▶
-              </button>
-            </div>
-          </div>
-        )}
+		{!loading && filteredServices.length > 0 && (
+		  <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+			<div className="text-xs text-slate-500 dark:text-slate-400">
+			  Hiển thị <span className="font-semibold text-slate-700 dark:text-slate-200">{startIndex + 1}</span> -{' '}
+			  <span className="font-semibold text-slate-700 dark:text-slate-200">
+				{Math.min(startIndex + itemsPerPage, filteredServices.length)}
+			  </span>{' '}
+			  trên <span className="font-semibold text-slate-700 dark:text-slate-200">{filteredServices.length}</span> bản ghi
+			</div>
+			
+			<div className="flex items-center space-x-1">
+			  {/* Nút Trước */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+				disabled={currentPage === 1}
+				className="px-3 py-1.5 rounded-lg border text-xs font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+			  >
+				◀ Trang trước
+			  </button>
+
+			  {/* Danh sách các nút số trang rút gọn */}
+			  {getPaginationRange(currentPage, totalPages).map((page, index) => {
+				// Render dấu ba chấm nếu phần tử là '...'
+				if (page === '...') {
+				  return (
+					<span
+					  key={`dots-${index}`}
+					  className="px-2 py-1.5 text-xs text-slate-400 dark:text-slate-500 select-none font-semibold"
+					>
+					  ...
+					</span>
+				  );
+				}
+
+				// Render nút bấm chọn trang
+				return (
+				  <button
+					key={page}
+					onClick={() => setCurrentPage(page)}
+					className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+					  currentPage === page
+						? 'bg-sky-600 text-white shadow-sm'
+						: 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+					}`}
+				  >
+					{page}
+				  </button>
+				);
+			  })}
+
+			  {/* Nút Sau */}
+			  <button
+				onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+				disabled={currentPage === totalPages || totalPages === 0}
+				className="px-3 py-1.5 rounded-lg border text-xs font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+			  >
+				Trang sau ▶
+			  </button>
+			</div>
+		  </div>
+		)}
       </div>
 
       {/* Modal Thêm Dịch Vụ */}

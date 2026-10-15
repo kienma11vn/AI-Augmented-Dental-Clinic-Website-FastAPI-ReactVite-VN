@@ -130,7 +130,7 @@ A. CÁC TÍNH NĂNG VÀ THAO TÁC:
    - Hệ thống tự động chuyển về trang 1 khi nhập từ khóa tìm kiếm.
 
 3. Thêm Dịch vụ Mới:
-   - Nhấn nút "➕ Thêm Dịch vụ Mới".
+   - Nhấn nút "+ Thêm Dịch vụ Mới".
    - Nhập thông tin trong Modal:
      * Mã Dịch vụ (*) (VD: KHAM01)
      * Tên Dịch vụ (*) (VD: Khám tổng quát)

@@ -363,7 +363,7 @@ export default function PatientTreatmentHistory() {
                   disabled={currentPage === 1}
                   className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
                 >
-                  Trang trước
+                  ◀ Trang trước
                 </button>
                 <span className="text-xs font-bold px-2">
                   Trang {currentPage} / {totalPages}
@@ -373,7 +373,7 @@ export default function PatientTreatmentHistory() {
                   disabled={currentPage === totalPages}
                   className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
                 >
-                  Trang sau
+                  Trang sau ▶
                 </button>
               </div>
             </div>

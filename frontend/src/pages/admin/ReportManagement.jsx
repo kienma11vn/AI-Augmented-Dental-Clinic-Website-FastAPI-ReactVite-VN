@@ -464,14 +464,14 @@ export default function ReportManagement() {
                   onClick={() => setServicesPage((prev) => prev - 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
                 >
-                  Trước
+                  ◀ Trang trước
                 </button>
                 <button
                   disabled={servicesPage === totalServicesPages}
                   onClick={() => setServicesPage((prev) => prev + 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
                 >
-                  Sau
+                  Trang sau ▶
                 </button>
               </div>
             </div>
@@ -536,14 +536,14 @@ export default function ReportManagement() {
                   onClick={() => setVisitsPage((prev) => prev - 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
                 >
-                  Trước
+                  ◀ Trang trước
                 </button>
                 <button
                   disabled={visitsPage === totalVisitsPages}
                   onClick={() => setVisitsPage((prev) => prev + 1)}
                   className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
                 >
-                  Sau
+                  Trang sau ▶
                 </button>
               </div>
             </div>
@@ -630,14 +630,14 @@ export default function ReportManagement() {
                 onClick={() => setFeedbacksPage((prev) => prev - 1)}
                 className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
               >
-                Trước
+                ◀ Trang trước
               </button>
               <button
                 disabled={feedbacksPage === totalFeedbacksPages}
                 onClick={() => setFeedbacksPage((prev) => prev + 1)}
                 className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
               >
-                Sau
+                Trang sau ▶
               </button>
             </div>
           </div>
@@ -685,14 +685,14 @@ export default function ReportManagement() {
                 onClick={() => setFollowupsPage((prev) => prev - 1)}
                 className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
               >
-                Trước
+                ◀ Trang trước
               </button>
               <button
                 disabled={followupsPage === totalFollowupsPages}
                 onClick={() => setFollowupsPage((prev) => prev + 1)}
                 className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 font-medium transition-all"
               >
-                Sau
+                Trang sau ▶
               </button>
             </div>
           </div>
