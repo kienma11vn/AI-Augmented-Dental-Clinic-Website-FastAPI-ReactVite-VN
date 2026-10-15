@@ -1058,7 +1058,7 @@ const handleEditSubmit = async (e) => {
             }}
             className="flex-1 md:flex-initial px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-sky-600/20"
           >
-            ➕ Đặt lịch khám mới
+            + Đặt lịch khám mới
           </button>
 
           <button

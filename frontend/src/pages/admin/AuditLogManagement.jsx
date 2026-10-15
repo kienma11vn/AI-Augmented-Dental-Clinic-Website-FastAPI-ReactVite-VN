@@ -257,26 +257,34 @@ export default function AuditLogManagement() {
           </table>
         </div>
 
-        {/* Nút Điều hướng Phân trang */}
-        <div className="p-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-          <span>Trang {page + 1}</span>
-          <div className="flex gap-2">
-            <button
-              disabled={page === 0}
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-            >
-              ◀ Trang trước
-            </button>
-            <button
-              disabled={!Array.isArray(logs) || logs.length < limit}
-              onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-            >
-              Trang sau ▶
-            </button>
+        {/* THANH PHÂN TRANG */}
+        {Array.isArray(logs) && logs.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-600 dark:text-slate-300 bg-slate-50/50 dark:bg-slate-800/50">
+            <div>
+              Hiển thị <strong>{page * limit + 1}</strong> -{' '}
+              <strong>{page * limit + logs.length}</strong> bản ghi
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(p - 1, 0))}
+                disabled={page === 0}
+                className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
+              >
+                ◀ Trang trước
+              </button>
+              <span className="text-xs font-bold px-2">
+                Trang {page + 1}
+              </span>
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={logs.length < limit}
+                className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
+              >
+                Trang sau ▶
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Modal Xem Chi tiết */}
