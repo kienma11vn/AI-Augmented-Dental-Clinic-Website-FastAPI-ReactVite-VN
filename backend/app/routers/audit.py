@@ -13,6 +13,7 @@ router = APIRouter()
 @router.get("", response_model=List[schemas.AuditLogOut])
 @router.get("/", response_model=List[schemas.AuditLogOut], include_in_schema=False)
 def get_audit_logs(
+    response: Response,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
     search: Optional[str] = None,
@@ -55,6 +56,10 @@ def get_audit_logs(
             query = query.filter(models.AuditLog.created_at <= end_dt)
         except ValueError:
             pass
+    
+    total_count = query.count()
+    response.headers["X-Total-Count"] = str(total_count)
+    response.headers["Access-Control-Expose-Headers"] = "X-Total-Count"
     
     return query.order_by(models.AuditLog.created_at.desc()).offset(skip).limit(limit).all()
     
