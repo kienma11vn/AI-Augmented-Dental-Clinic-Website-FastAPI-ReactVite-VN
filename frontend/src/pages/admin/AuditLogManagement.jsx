@@ -12,11 +12,11 @@ export default function AuditLogManagement() {
   const [page, setPage] = useState(0);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(null);
   const limit = 15;
   
-  // Tính tổng số trang (tối thiểu là 1 trang)
-  const totalPages = Math.ceil(total / limit) || 1;
+  // Tính tổng số trang nếu Backend trả về tổng số bản ghi
+  const totalPages = total !== null ? Math.ceil(total / limit) : null;
 
   useEffect(() => {
     fetchAuditLogs();
@@ -36,8 +36,9 @@ export default function AuditLogManagement() {
       const logList = Array.isArray(res) ? res : (Array.isArray(res?.data) ? res.data : []);
       setLogs(logList);
       
-      // Lấy tổng số bản ghi từ response API (fallback về độ dài mảng nếu API trả về danh sách thuần)
-      setTotal(res?.total ?? res?.count ?? res?.total_count ?? logList.length);
+      // Chỉ lưu total nếu Backend thực sự có trường tổng số bản ghi (không tự ý lấy logList.length)
+      const apiTotal = res?.total ?? res?.count ?? res?.total_count ?? res?.headers?.['x-total-count'];
+      setTotal(apiTotal !== undefined && apiTotal !== null ? Number(apiTotal) : null);
     } catch (err) {
       console.error('Lỗi tải nhật ký hệ thống:', err);
       setLogs([]);
@@ -270,8 +271,12 @@ export default function AuditLogManagement() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-600 dark:text-slate-300 bg-slate-50/50 dark:bg-slate-800/50">
             <div>
               Hiển thị <strong>{page * limit + 1}</strong> -{' '}
-              <strong>{Math.min((page + 1) * limit, total || (page * limit + logs.length))}</strong>{' '}
-              trên tổng số <strong>{total || logs.length}</strong> bản ghi
+              <strong>{page * limit + logs.length}</strong>
+              {total !== null ? (
+                <> trên tổng số <strong>{total}</strong> bản ghi</>
+              ) : (
+                <> bản ghi</>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -282,11 +287,11 @@ export default function AuditLogManagement() {
                 ◀ Trang trước
               </button>
               <span className="text-xs font-bold px-2">
-                Trang {page + 1} / {totalPages}
+                Trang {page + 1}{totalPages !== null ? ` / ${totalPages}` : ''}
               </span>
               <button
-                onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
-                disabled={page + 1 >= totalPages || logs.length < limit}
+                onClick={() => setPage((p) => p + 1)}
+                disabled={totalPages !== null ? page + 1 >= totalPages : logs.length < limit}
                 className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-xs transition-all shadow-sm"
               >
                 Trang sau ▶
